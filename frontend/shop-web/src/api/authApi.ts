@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 import { supabase } from '../lib/supabaseClient';
 import { User } from '../types/User';
 import { siteUrl } from '../lib/siteUrl';
@@ -39,7 +40,7 @@ export const authApi = {
       },
     });
     if (error) throw error;
-    if (!signUpData.user) throw new Error('Rejestracja nie powiodła się.');
+    if (!signUpData.user) throw new Error(t('err.registerFailed'));
 
     if (!signUpData.session) return { user: null, needsEmailConfirmation: true };
 

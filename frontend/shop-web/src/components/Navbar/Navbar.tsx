@@ -1,3 +1,4 @@
+import { useT, useLangStore, LANGS } from '../../i18n';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
@@ -6,6 +7,8 @@ import { authApi } from '../../api/authApi';
 import './Navbar.css';
 
 export function Navbar() {
+  const { t, lang } = useT();
+  const setLang = useLangStore((s) => s.setLang);
   const { user, logout, isAdmin } = useAuthStore();
   const totalItems = useCartStore((s) => s.totalItems());
   const navigate = useNavigate();
@@ -39,7 +42,7 @@ export function Navbar() {
         <button
           className="navbar-toggle"
           onClick={() => setMenuOpen((v) => !v)}
-          aria-label={menuOpen ? 'Zamknij menu' : 'Otwórz menu'}
+          aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
           aria-expanded={menuOpen}
         >
           {menuOpen ? '✕' : '☰'}
@@ -47,27 +50,34 @@ export function Navbar() {
 
         <div className={`navbar-collapse ${menuOpen ? 'navbar-collapse-open' : ''}`}>
           <nav className="navbar-links">
-            <Link to="/products" onClick={closeMenu}>Produkty</Link>
-            <Link to="/blog" onClick={closeMenu}>Blog</Link>
-            {isAdmin() && <Link to="/admin" onClick={closeMenu}>Panel admina</Link>}
+            <Link to="/products" onClick={closeMenu}>{t('nav.products')}</Link>
+            <Link to="/blog" onClick={closeMenu}>{t('nav.blog')}</Link>
+            {isAdmin() && <Link to="/admin" onClick={closeMenu}>{t('nav.admin')}</Link>}
           </nav>
 
           <div className="navbar-actions">
             <Link to="/cart" className="cart-link" onClick={closeMenu}>
-              🛒<span className="cart-label"> Koszyk</span> {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+              🛒<span className="cart-label"> {t('nav.cart')}</span> {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
             </Link>
 
             {user ? (
               <>
                 <Link to="/account" onClick={closeMenu}>{user.firstName}</Link>
-                <button className="link-btn" onClick={handleLogout}>Wyloguj</button>
+                <button className="link-btn" onClick={handleLogout}>{t('nav.logout')}</button>
               </>
             ) : (
               <>
-                <Link to="/login" onClick={closeMenu}>Zaloguj</Link>
-                <Link to="/register" onClick={closeMenu}>Rejestracja</Link>
+                <Link to="/login" onClick={closeMenu}>{t('nav.login')}</Link>
+                <Link to="/register" onClick={closeMenu}>{t('nav.register')}</Link>
               </>
             )}
+            <div className="lang-switch" role="group" aria-label={t('nav.language')}>
+              {LANGS.map((l) => (
+                <button key={l} type="button" className={l === lang ? 'is-active' : ''} aria-pressed={l === lang} onClick={() => setLang(l)}>
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

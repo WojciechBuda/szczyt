@@ -8,6 +8,7 @@ export interface SocialLink {
 
 export interface Footer {
   footerText: string;
+  footerTextEn?: string | null;
   contactEmail?: string | null;
   socialLinks: SocialLink[];
 }

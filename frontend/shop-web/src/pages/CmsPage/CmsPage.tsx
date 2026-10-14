@@ -1,3 +1,4 @@
+import { useT } from '../../i18n';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { pageBuilderApi } from '../../api/pageBuilderApi';
@@ -8,6 +9,7 @@ import { PageRenderer } from '../../components/PageBlocks/PageRenderer';
 export function CmsPage() {
   const { slug = '' } = useParams();
   const [blocks, setBlocks] = useState<PageBlock[]>([]);
+  const { t } = useT();
   const [state, setState] = useState<'loading' | 'ready' | 'missing'>('loading');
 
   useEffect(() => {
@@ -24,7 +26,7 @@ export function CmsPage() {
     return () => { cancelled = true; };
   }, [slug]);
 
-  if (state === 'loading') return <div className="page-message"><p>Ładowanie…</p></div>;
-  if (state === 'missing') return <div className="page-message"><h1>Nie znaleziono strony</h1></div>;
+  if (state === 'loading') return <div className="page-message"><p>{t('common.loading')}</p></div>;
+  if (state === 'missing') return <div className="page-message"><h1>{t('common.notFound')}</h1></div>;
   return <PageRenderer blocks={blocks} />;
 }

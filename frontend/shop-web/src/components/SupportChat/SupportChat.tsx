@@ -1,9 +1,11 @@
+import { useT } from '../../i18n';
 import { useEffect, useRef, useState } from 'react';
 import { chatApi } from '../../api/chatApi';
 import { ChatMessage, Faq } from '../../types/Chat';
 import './SupportChat.css';
 
 export function SupportChat() {
+  const { t } = useT();
   const [available, setAvailable] = useState(false);
   const [welcome, setWelcome] = useState('');
   const [faqs, setFaqs] = useState<Faq[]>([]);
@@ -36,7 +38,7 @@ export function SupportChat() {
       const reply = await chatApi.sendMessage(nextMessages);
       setMessages((m) => [...m, { role: 'assistant', content: reply }]);
     } catch {
-      setMessages((m) => [...m, { role: 'assistant', content: 'Przepraszam, coś poszło nie tak. Spróbuj ponownie za chwilę.' }]);
+      setMessages((m) => [...m, { role: 'assistant', content: t('chat.error') }]);
     } finally {
       setSending(false);
     }
@@ -49,8 +51,8 @@ export function SupportChat() {
       {open && (
         <div className="support-chat-panel">
           <div className="support-chat-header">
-            <span>🏔️ Asystent Szczyt</span>
-            <button className="support-chat-close" onClick={() => setOpen(false)} aria-label="Zamknij czat">✕</button>
+            <span>{t('chat.title')}</span>
+            <button className="support-chat-close" onClick={() => setOpen(false)} aria-label={t('chat.close')}>✕</button>
           </div>
 
           <div className="support-chat-messages" ref={scrollRef}>
@@ -84,15 +86,15 @@ export function SupportChat() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Napisz wiadomość..."
+              placeholder={t('chat.placeholder')}
               disabled={sending}
             />
-            <button type="submit" disabled={sending || !input.trim()} aria-label="Wyślij">➤</button>
+            <button type="submit" disabled={sending || !input.trim()} aria-label={t('chat.send')}>➤</button>
           </form>
         </div>
       )}
 
-      <button className="support-chat-bubble-btn" onClick={() => setOpen((v) => !v)} aria-label="Otwórz czat wsparcia">
+      <button className="support-chat-bubble-btn" onClick={() => setOpen((v) => !v)} aria-label={t('chat.open')}>
         {open ? '✕' : '💬'}
       </button>
     </div>
