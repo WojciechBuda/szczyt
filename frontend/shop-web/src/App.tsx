@@ -17,6 +17,7 @@ import { Account } from './pages/Account/Account';
 import { Admin } from './pages/Admin/Admin';
 import { BlogList } from './pages/Blog/BlogList';
 import { BlogPost } from './pages/Blog/BlogPost';
+import { EmailConfirmed } from './pages/EmailConfirmed/EmailConfirmed';
 import { CmsPage } from './pages/CmsPage/CmsPage';
 import { PaymentReturn } from './pages/PaymentReturn/PaymentReturn';
 
@@ -59,6 +60,7 @@ function App() {
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/auth/confirmed" element={<EmailConfirmed />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/payment-return" element={<PaymentReturn />} />
