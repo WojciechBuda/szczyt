@@ -10,7 +10,7 @@ export function Cart() {
     return (
       <div className="cart-empty">
         <p>Twój koszyk jest pusty.</p>
-        <Link to="/products"><button className="btn btn-primary">Przeglądaj produkty</button></Link>
+        <Link to="/products" className="btn btn-primary">Przeglądaj produkty</Link>
       </div>
     );
   }
@@ -34,7 +34,7 @@ export function Cart() {
               onChange={(e) => updateQuantity(item.productId, Number(e.target.value))}
             />
             <span className="cart-item-total">{(item.price * item.quantity).toFixed(2)} zł</span>
-            <button className="remove-btn" onClick={() => removeItem(item.productId)}>✕</button>
+            <button className="remove-btn" onClick={() => removeItem(item.productId)} aria-label={`Usuń ${item.name}`}>✕</button>
           </div>
         ))}
       </div>

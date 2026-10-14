@@ -4,11 +4,12 @@
   position: sticky;
   top: 0;
   z-index: 50;
+  padding-top: env(safe-area-inset-top);
 }
 .navbar-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0.9rem 1.5rem;
+  padding: 0.8rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,26 +24,20 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  white-space: nowrap;
 }
-.navbar-links {
-  display: flex;
-  gap: 1.5rem;
-  flex: 1;
-  margin-left: 2rem;
-}
-.navbar-links a {
-  color: #d7dccf;
-  text-decoration: none;
-  font-weight: 500;
-}
-.navbar-links a:hover { color: var(--color-accent); }
-.navbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-}
+
+/* Desktop: brand | links ........ actions */
+.navbar-collapse { display: flex; align-items: center; flex: 1; gap: 1rem; }
+.navbar-toggle { display: none; }
+
+.navbar-links { display: flex; gap: 1.5rem; flex: 1; margin-left: 2rem; }
+.navbar-links a,
 .navbar-actions a { color: #d7dccf; text-decoration: none; font-weight: 500; }
+.navbar-links a:hover,
 .navbar-actions a:hover { color: var(--color-accent); }
+.navbar-actions { display: flex; align-items: center; gap: 1.2rem; }
+
 .link-btn {
   background: none;
   border: none;
@@ -50,6 +45,7 @@
   cursor: pointer;
   font-weight: 500;
   font-size: 0.95rem;
+  padding: 0;
 }
 .link-btn:hover { color: var(--color-accent); }
 .cart-link { position: relative; font-size: 1.2rem; }
@@ -63,4 +59,55 @@
   font-weight: 700;
   padding: 1px 6px;
   border-radius: 10px;
+}
+
+/* Tablet and phone: collapse into a hamburger menu */
+@media (max-width: 900px) {
+  .navbar-inner { flex-wrap: wrap; padding: 0.6rem 1rem; }
+
+  .navbar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -0.5rem;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+  }
+
+  .navbar-collapse {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    flex: 0 0 100%;
+    gap: 0;
+    padding: 0.25rem 0 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    max-height: calc(100dvh - 4.5rem);
+    overflow-y: auto;
+  }
+  .navbar-collapse-open { display: flex; }
+
+  .navbar-links { flex-direction: column; gap: 0; margin: 0; }
+  .navbar-actions { flex-direction: column; align-items: stretch; gap: 0; border-top: 1px solid rgba(255, 255, 255, 0.12); margin-top: 0.25rem; }
+
+  /* Every entry becomes a full-width, finger-sized row. */
+  .navbar-links a,
+  .navbar-actions a,
+  .navbar-actions .link-btn {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 0.25rem;
+    font-size: 1rem;
+    text-align: left;
+    width: 100%;
+  }
+  .cart-link { font-size: 1rem; }
+  .cart-badge { position: static; margin-left: 0.5rem; }
 }
