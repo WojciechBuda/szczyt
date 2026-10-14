@@ -130,3 +130,22 @@
 @media (max-width: 480px) {
   .support-chat { bottom: 1rem; right: 1rem; }
 }
+
+/* Phones: the open chat becomes a bottom sheet that uses the dynamic viewport height,
+   so the on-screen keyboard and mobile browser bars don't push the input out of view. */
+@media (max-width: 480px) {
+  .support-chat { right: 0.75rem; bottom: calc(0.75rem + env(safe-area-inset-bottom)); left: auto; }
+  .support-chat-panel {
+    position: fixed;
+    inset: auto 0 0 0;
+    width: 100%;
+    height: min(560px, 85dvh);
+    border-radius: 16px 16px 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* The sheet has its own close button; hide the floating bubble while it is open. */
+  .support-chat-panel + .support-chat-bubble-btn { display: none; }
+  .support-chat-close { width: 44px; height: 44px; font-size: 1.2rem; margin: -0.6rem -0.6rem -0.6rem 0; }
+  .support-chat-input-row button { width: 48px; min-height: 44px; }
+  .support-chat-suggestion { min-height: 44px; }
+}
