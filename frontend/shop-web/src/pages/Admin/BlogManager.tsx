@@ -40,6 +40,8 @@ export function BlogManager() {
       else await blogApi.create(form);
       resetForm();
       load();
+    } catch (err: any) {
+      alert(`Nie udało się zapisać zmian: ${err?.message || 'nieznany błąd'}`);
     } finally {
       setSaving(false);
     }

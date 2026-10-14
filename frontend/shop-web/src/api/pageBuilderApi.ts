@@ -72,13 +72,18 @@ export const pageBuilderApi = {
     if (error) throw error;
   },
 
+  // One UPDATE per block. An upsert would send the id inside an INSERT, which Postgres rejects
+  // for GENERATED ALWAYS identity columns ("cannot insert a non-DEFAULT value into column id").
   saveBlocks: async (blocks: PageBlock[]): Promise<void> => {
-    if (blocks.length === 0) return;
-    const rows = blocks.map((b) => ({
-      id: b.id, page_id: b.pageId, type: b.type, order: b.order, is_visible: b.isVisible,
-      content: b.content, style: b.style,
-    }));
-    const { error } = await supabase.from('page_blocks').upsert(rows, { onConflict: 'id' });
-    if (error) throw error;
+    const results = await Promise.all(
+      blocks.map((b) =>
+        supabase
+          .from('page_blocks')
+          .update({ type: b.type, order: b.order, is_visible: b.isVisible, content: b.content, style: b.style })
+          .eq('id', b.id)
+      )
+    );
+    const failed = results.find((r) => r.error);
+    if (failed?.error) throw failed.error;
   },
 };

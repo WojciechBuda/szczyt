@@ -46,6 +46,8 @@ export function ChatbotManager() {
       setFaqs(fresh);
       setSavedFaqs(true);
       setTimeout(() => setSavedFaqs(false), 1800);
+    } catch (err: any) {
+      alert(`Nie udało się zapisać zmian: ${err?.message || 'nieznany błąd'}`);
     } finally {
       setSavingFaqs(false);
     }
@@ -58,6 +60,8 @@ export function ChatbotManager() {
       await chatApi.updateSettings(settings);
       setSavedSettings(true);
       setTimeout(() => setSavedSettings(false), 1800);
+    } catch (err: any) {
+      alert(`Nie udało się zapisać zmian: ${err?.message || 'nieznany błąd'}`);
     } finally {
       setSavingSettings(false);
     }
