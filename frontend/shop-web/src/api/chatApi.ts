@@ -59,11 +59,13 @@ export const chatApi = {
     const existingOnes = faqs.filter((f) => f.id > 0);
 
     if (existingOnes.length > 0) {
-      const { error } = await supabase.from('faqs').upsert(
-        existingOnes.map((f) => ({ id: f.id, question: f.question, answer: f.answer, order: f.order, is_visible: f.isVisible })),
-        { onConflict: 'id' }
+      const results = await Promise.all(
+        existingOnes.map((f) =>
+          supabase.from('faqs').update({ question: f.question, answer: f.answer, order: f.order, is_visible: f.isVisible }).eq('id', f.id)
+        )
       );
-      if (error) throw error;
+      const failed = results.find((r) => r.error);
+      if (failed?.error) throw failed.error;
     }
 
     if (newOnes.length > 0) {

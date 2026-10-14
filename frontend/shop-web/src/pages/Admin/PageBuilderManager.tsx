@@ -123,6 +123,8 @@ export function PageBuilderManager() {
       if (activePage) selectPage(activePage);
       setSaved(true);
       setTimeout(() => setSaved(false), 1800);
+    } catch (err: any) {
+      alert(`Nie udało się zapisać zmian: ${err?.message || 'nieznany błąd'}`);
     } finally {
       setSaving(false);
     }
