@@ -1,0 +1,21 @@
+# Supabase CLI configuration (https://supabase.com/docs/guides/local-development/cli/config)
+project_id = "szczyt"
+
+[db]
+major_version = 15
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+# Edge Functions are called from the browser with the publishable key, which is
+# not a JWT, so the platform-level JWT check must be off. Each function does its
+# own authorization instead (user token check / payment signature check).
+[functions.chat-support]
+verify_jwt = false
+
+[functions.p24-create-payment]
+verify_jwt = false
+
+[functions.p24-webhook]
+verify_jwt = false
