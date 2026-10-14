@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabaseClient';
 import { User } from '../types/User';
+import { siteUrl } from '../lib/siteUrl';
 
 /** Loads the profiles row for a user and maps it to the app's User shape. */
 export async function loadProfile(userId: string, fallbackEmail: string): Promise<User> {
@@ -20,23 +21,39 @@ export async function loadProfile(userId: string, fallbackEmail: string): Promis
   };
 }
 
+export interface RegisterResult {
+  user: User | null;
+  /** True when the project requires e-mail confirmation: the account exists but there is no session yet. */
+  needsEmailConfirmation: boolean;
+}
+
 export const authApi = {
-  register: async (data: { email: string; password: string; firstName: string; lastName: string }) => {
+  register: async (data: { email: string; password: string; firstName: string; lastName: string }): Promise<RegisterResult> => {
     const { data: signUpData, error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
-      options: { data: { first_name: data.firstName, last_name: data.lastName } },
+      options: {
+        data: { first_name: data.firstName, last_name: data.lastName },
+        // Where the link in the confirmation e-mail sends the user. Must be allow-listed in Supabase.
+        emailRedirectTo: `${siteUrl()}/auth/confirmed`,
+      },
     });
     if (error) throw error;
     if (!signUpData.user) throw new Error('Rejestracja nie powiodła się.');
 
-    if (!signUpData.session) {
-      // Project has "Confirm email" enabled — account exists but isn't logged in yet.
-      throw new Error('Konto utworzone! Sprawdź e-mail, aby potwierdzić rejestrację, a potem się zaloguj.');
-    }
+    if (!signUpData.session) return { user: null, needsEmailConfirmation: true };
 
-    const user = await loadProfile(signUpData.user.id, data.email);
-    return { user };
+    return { user: await loadProfile(signUpData.user.id, data.email), needsEmailConfirmation: false };
+  },
+
+  /** Sends the confirmation e-mail again (same redirect target as the original). */
+  resendConfirmation: async (email: string): Promise<void> => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: `${siteUrl()}/auth/confirmed` },
+    });
+    if (error) throw error;
   },
 
   login: async (data: { email: string; password: string }) => {
