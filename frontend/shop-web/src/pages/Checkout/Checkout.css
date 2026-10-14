@@ -31,3 +31,10 @@
 @media (max-width: 768px) {
   .checkout-page { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 768px) {
+  .checkout-page { margin: 1rem auto; padding: 0 1rem; gap: 1.25rem; }
+  /* Show the order summary before the address form so the total is visible first. */
+  .checkout-summary { order: -1; padding: 1rem; }
+  .checkout-form input, .checkout-form select { min-height: 44px; }
+}

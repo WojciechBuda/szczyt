@@ -29,3 +29,22 @@
 @media (max-width: 768px) {
   .cart-page { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 768px) {
+  .cart-page { margin: 1rem auto; padding: 0 1rem; gap: 1.25rem; }
+}
+/* Phones: each line item becomes a small card instead of a five-column row. */
+@media (max-width: 600px) {
+  .cart-item {
+    grid-template-columns: 64px minmax(0, 1fr) 44px;
+    grid-template-areas:
+      'img info remove'
+      'img qty  total';
+    gap: 0.4rem 0.75rem;
+  }
+  .cart-item img { grid-area: img; width: 64px; height: 64px; }
+  .cart-item-info { grid-area: info; min-width: 0; }
+  .cart-item input { grid-area: qty; width: 72px; min-height: 44px; }
+  .cart-item-total { grid-area: total; align-self: center; }
+  .remove-btn { grid-area: remove; width: 44px; height: 44px; justify-self: end; }
+}

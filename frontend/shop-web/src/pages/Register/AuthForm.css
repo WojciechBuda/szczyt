@@ -24,3 +24,9 @@
 .auth-hint { margin-top: 0.5rem; font-size: 0.78rem; text-align: center; color: #999; }
 .auth-link-btn { background: none; border: none; padding: 0; margin: 0 0 0.5rem; color: var(--color-accent-dark); font-weight: 600; cursor: pointer; text-align: left; text-decoration: underline; }
 .auth-form .auth-link-btn { margin-top: 0; }
+
+@media (max-width: 480px) {
+  .auth-page { padding: 1.25rem 1rem; }
+  .auth-form { padding: 1.25rem; }
+  .auth-form input { min-height: 44px; }
+}
