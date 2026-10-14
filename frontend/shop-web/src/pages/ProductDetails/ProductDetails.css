@@ -6,7 +6,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 2.5rem;
 }
-.pd-image { width: 100%; border-radius: 12px; object-fit: cover; max-height: 420px; }
+.pd-image { width: 100%; height: auto; aspect-ratio: 4 / 3; border-radius: 12px; object-fit: cover; background: #e8e6dc; }
 .pd-category { font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: #8a8fa3; }
 .pd-info h1 { margin: 0.4rem 0 1rem; }
 .pd-description { color: #555; line-height: 1.6; }
@@ -22,7 +22,6 @@
 
 @media (max-width: 768px) {
   .product-details { margin: 1rem auto; padding: 0 1rem; gap: 1.25rem; }
-  .pd-image { max-height: 280px; }
   .pd-price { font-size: 1.5rem; }
   .pd-actions input { min-height: 44px; }
 }
