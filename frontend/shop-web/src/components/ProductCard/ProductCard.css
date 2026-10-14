@@ -9,7 +9,7 @@
 }
 .product-card:hover { box-shadow: 0 8px 24px rgba(31,51,42,0.12); transform: translateY(-2px); }
 .product-card-image-link { display: block; }
-.product-card-image { width: 100%; height: 180px; object-fit: cover; }
+.product-card-image { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; background: #e8e6dc; }
 .product-card-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.4rem; }
 .product-card-category { font-size: 0.75rem; text-transform: uppercase; color: var(--color-muted); font-weight: 600; }
 .product-card-title { font-weight: 700; color: var(--color-primary-dark); text-decoration: none; font-size: 1rem; }
@@ -19,7 +19,6 @@
 /* Two columns on phones; price and button stack so neither gets squeezed. */
 @media (max-width: 600px) {
   .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
-  .product-card-image { height: 120px; }
   .product-card-body { padding: 0.75rem; }
   .product-card-footer { flex-direction: column; align-items: stretch; gap: 0.5rem; }
   .product-card-price { font-size: 1rem; }
