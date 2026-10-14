@@ -1,0 +1,24 @@
+.btn {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  line-height: 1.2;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.btn:active { transform: scale(0.98); }
+.btn:disabled, .btn.is-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+.btn-primary { background: var(--color-accent); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--color-accent-dark); }
+
+.btn-secondary { background: #eceee7; color: var(--color-primary-dark); }
+.btn-secondary:hover:not(:disabled) { background: #e0e3d9; }
+
+.btn-danger { background: #b3492f; color: #fff; }
+.btn-danger:hover:not(:disabled) { opacity: 0.9; }

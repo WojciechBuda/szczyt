@@ -1,0 +1,12 @@
+.cart-summary {
+  background: #fff;
+  border: 1px solid #eceef3;
+  border-radius: 12px;
+  padding: 1.5rem;
+  height: fit-content;
+}
+.cart-summary h3 { margin: 0 0 1rem; }
+.cart-summary-row { display: flex; justify-content: space-between; padding: 0.4rem 0; color: #555; }
+.cart-summary-total { font-weight: 800; font-size: 1.15rem; color: var(--color-primary-dark); border-top: 1px solid #eceef3; margin-top: 0.5rem; padding-top: 0.75rem; }
+.checkout-link { display: block; margin-top: 1rem; }
+.checkout-btn { width: 100%; }

@@ -1,0 +1,38 @@
+/* Style dla PageBuilderManager i BlogManager — reszta klas (drag-handle,
+   layout-tile-type, visibility-toggle, remove-link-btn, image-upload-*,
+   footer-field, admin-table...) jest już zdefiniowana w Admin.css. */
+
+.page-builder-manager, .blog-manager { max-width: 720px; }
+
+.pb-page-picker { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; }
+.pb-page-picker select { padding: 0.5rem 0.7rem; border-radius: 8px; border: 1px solid var(--color-border); font-size: 0.9rem; }
+
+.pb-new-page { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+.pb-new-page input { padding: 0.5rem 0.7rem; border-radius: 8px; border: 1px solid var(--color-border); font-size: 0.85rem; flex: 1; min-width: 140px; }
+
+.pb-hint { font-size: 0.8rem; color: var(--color-muted); margin: 0 0 1.25rem; }
+
+.pb-blocks { display: flex; flex-direction: column; gap: 0.9rem; margin: 1.25rem 0; }
+.pb-block {
+  background: #fff; border: 1px solid var(--color-border); border-radius: 12px;
+  padding: 1rem; display: flex; flex-direction: column; gap: 0.55rem; cursor: grab;
+}
+.pb-block:active { cursor: grabbing; }
+.pb-block-header { display: flex; align-items: center; gap: 0.6rem; }
+.pb-block input, .pb-block textarea, .pb-block select {
+  padding: 0.5rem 0.7rem; border-radius: 8px; border: 1px solid var(--color-border);
+  font-size: 0.88rem; font-family: inherit;
+}
+.pb-style-row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; }
+.pb-style-row input[type="color"] { width: 44px; height: 34px; padding: 2px; }
+
+.pb-add-block { display: flex; gap: 0.6rem; margin-bottom: 1.25rem; }
+.pb-add-block select { flex: 1; padding: 0.5rem 0.7rem; border-radius: 8px; border: 1px solid var(--color-border); }
+
+.blog-form { max-width: 100%; margin-bottom: 1.5rem; }
+.blog-form textarea { font-family: inherit; resize: vertical; }
+
+.pb-gallery-editor { display: flex; flex-direction: column; gap: 0.5rem; }
+.pb-gallery-item { display: flex; align-items: center; gap: 0.5rem; }
+.pb-gallery-item img { width: 56px; height: 42px; object-fit: cover; border-radius: 6px; }
+.pb-gallery-item input { flex: 1; }
