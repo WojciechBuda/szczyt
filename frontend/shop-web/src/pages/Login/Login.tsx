@@ -10,6 +10,8 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [canResend, setCanResend] = useState(false);
+  const [info, setInfo] = useState<string | null>(null);
   const setUser = useAuthStore((s) => s.setUser);
   const navigate = useNavigate();
 
@@ -22,9 +24,24 @@ export function Login() {
       setUser(res.user);
       navigate('/');
     } catch (err: any) {
-      setError(err.message || 'Nie udało się zalogować.');
+      if (/email not confirmed/i.test(err.message || '')) {
+        setError('Adres e-mail nie został jeszcze potwierdzony. Kliknij link z wiadomości od nas albo wyślij ją ponownie.');
+        setCanResend(true);
+      } else {
+        setError(err.message || 'Nie udało się zalogować.');
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const resend = async () => {
+    try {
+      await authApi.resendConfirmation(email);
+      setError(null);
+      setInfo('Wysłaliśmy link potwierdzający ponownie.');
+    } catch (err: any) {
+      setError(err.message || 'Nie udało się wysłać wiadomości.');
     }
   };
 
@@ -33,6 +50,8 @@ export function Login() {
       <form className="auth-form" onSubmit={handleSubmit}>
         <h1>Zaloguj się</h1>
         {error && <div className="auth-error">{error}</div>}
+        {info && <div className="auth-info">{info}</div>}
+        {canResend && <button type="button" className="auth-link-btn" onClick={resend}>Wyślij link ponownie</button>}
         <label>E-mail</label>
         <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         <label>Hasło</label>

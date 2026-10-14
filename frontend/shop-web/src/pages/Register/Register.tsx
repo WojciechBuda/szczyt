@@ -10,6 +10,7 @@ export function Register() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [awaitingConfirmation, setAwaitingConfirmation] = useState(false);
   const setUser = useAuthStore((s) => s.setUser);
   const navigate = useNavigate();
 
@@ -23,27 +24,50 @@ export function Register() {
     setLoading(true);
     try {
       const res = await authApi.register(form);
-      setUser(res.user);
-      navigate('/');
-    } catch (err: any) {
-      const message = err.message || 'Nie udało się utworzyć konta.';
-      // The "check your e-mail" case is informational, not an error.
-      if (message.includes('Sprawdź e-mail')) {
-        setInfo(message);
+      if (res.needsEmailConfirmation) {
+        setAwaitingConfirmation(true);
       } else {
-        setError(message);
+        setUser(res.user);
+        navigate('/');
       }
+    } catch (err: any) {
+      setError(err.message || 'Nie udało się utworzyć konta.');
     } finally {
       setLoading(false);
     }
   };
+
+  const resend = async () => {
+    setError(null);
+    setInfo(null);
+    try {
+      await authApi.resendConfirmation(form.email);
+      setInfo('Wysłaliśmy wiadomość ponownie. Sprawdź też folder spam.');
+    } catch (err: any) {
+      setError(err.message || 'Nie udało się wysłać wiadomości ponownie.');
+    }
+  };
+
+  if (awaitingConfirmation) {
+    return (
+      <div className="auth-page">
+        <div className="auth-form">
+          <h1>Sprawdź skrzynkę</h1>
+          <p>Wysłaliśmy link potwierdzający na adres <strong>{form.email}</strong>. Kliknij go, aby aktywować konto.</p>
+          {error && <div className="auth-error">{error}</div>}
+          {info && <div className="auth-info">{info}</div>}
+          <Button type="button" variant="secondary" onClick={resend}>Wyślij ponownie</Button>
+          <p className="auth-switch"><Link to="/login">Przejdź do logowania</Link></p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-page">
       <form className="auth-form" onSubmit={handleSubmit}>
         <h1>Załóż konto</h1>
         {error && <div className="auth-error">{error}</div>}
-        {info && <div className="auth-info">{info}</div>}
         <label>Imię</label>
         <input required value={form.firstName} onChange={update('firstName')} />
         <label>Nazwisko</label>
