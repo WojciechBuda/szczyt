@@ -24,10 +24,19 @@
   border-radius: 12px;
   padding: 1.5rem;
 }
-.checkout-summary-row { display: flex; justify-content: space-between; padding: 0.4rem 0; color: #555; font-size: 0.9rem; }
+.checkout-summary-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.4rem 0; color: #555; font-size: 0.9rem; }
 .checkout-summary-total { font-weight: 800; font-size: 1.1rem; color: var(--color-primary-dark); border-top: 1px solid #eceef3; margin-top: 0.5rem; padding-top: 0.75rem; }
 .mock-note { font-size: 0.78rem; color: #999; margin-top: 1rem; }
 
 @media (max-width: 768px) {
   .checkout-page { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 768px) {
+  .checkout-page { margin: 1rem auto; padding: 0 1rem; gap: 1.25rem; }
+  /* Show the order summary before the address form so the total is visible first. */
+  .checkout-summary { order: -1; padding: 1rem; }
+  .checkout-form input, .checkout-form select { min-height: 44px; }
+}
+
+.checkout-summary-row > span:last-child { white-space: nowrap; }

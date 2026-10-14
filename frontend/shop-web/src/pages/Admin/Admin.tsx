@@ -138,6 +138,7 @@ export function Admin() {
             </div>
           </form>
 
+          <div className="table-scroll">
           <table className="admin-table">
             <thead><tr><th>Nazwa</th><th>Cena</th><th>Stan</th><th>Kategoria</th><th></th></tr></thead>
             <tbody>
@@ -155,6 +156,7 @@ export function Admin() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 

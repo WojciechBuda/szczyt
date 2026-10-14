@@ -96,12 +96,24 @@ export function PageBuilderManager() {
     const from = dragIndex.current;
     if (from === null || from === i) return;
     setBlocks((prev) => {
-      const next = [...prev];
+      const next = [...prev].sort((a, b) => a.order - b.order);
       const [moved] = next.splice(from, 1);
       next.splice(i, 0, moved);
       return next.map((b, idx) => ({ ...b, order: idx + 1 }));
     });
     dragIndex.current = null;
+  };
+
+  // Touch screens have no HTML5 drag-and-drop, so every block also gets up/down buttons.
+  const moveBlock = (from: number, delta: -1 | 1) => {
+    const to = from + delta;
+    setBlocks((prev) => {
+      const sorted = [...prev].sort((a, b) => a.order - b.order);
+      if (to < 0 || to >= sorted.length) return prev;
+      const [moved] = sorted.splice(from, 1);
+      sorted.splice(to, 0, moved);
+      return sorted.map((b, idx) => ({ ...b, order: idx + 1 }));
+    });
   };
 
   const save = async () => {
@@ -146,8 +158,12 @@ export function PageBuilderManager() {
             {[...blocks].sort((a, b) => a.order - b.order).map((block, i) => (
               <div key={block.id} className="pb-block" draggable onDragStart={() => handleDragStart(i)} onDragOver={(e) => e.preventDefault()} onDrop={() => handleDrop(i)}>
                 <div className="pb-block-header">
-                  <span className="drag-handle">⠿</span>
+                  <span className="drag-handle" aria-hidden="true">⠿</span>
                   <span className="layout-tile-type">{typeLabels[block.type]}</span>
+                  <span className="pb-move-buttons">
+                    <button type="button" onClick={() => moveBlock(i, -1)} disabled={i === 0} aria-label="Przesuń blok wyżej">↑</button>
+                    <button type="button" onClick={() => moveBlock(i, 1)} disabled={i === blocks.length - 1} aria-label="Przesuń blok niżej">↓</button>
+                  </span>
                   <label className="visibility-toggle">
                     <input type="checkbox" checked={block.isVisible} onChange={(e) => toggleVisible(block.id, e.target.checked)} />
                     Widoczny

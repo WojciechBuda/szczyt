@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { useCartStore } from '../../store/cartStore';
 import { authApi } from '../../api/authApi';
@@ -11,7 +11,18 @@ export function Navbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const location = useLocation();
+
   const closeMenu = () => setMenuOpen(false);
+
+  // Close the menu after any navigation and on Escape.
+  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
 
   const handleLogout = async () => {
     await authApi.logout();
@@ -43,7 +54,7 @@ export function Navbar() {
 
           <div className="navbar-actions">
             <Link to="/cart" className="cart-link" onClick={closeMenu}>
-              🛒 {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+              🛒<span className="cart-label"> Koszyk</span> {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
             </Link>
 
             {user ? (
