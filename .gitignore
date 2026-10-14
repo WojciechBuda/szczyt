@@ -1,0 +1,19 @@
+# dependencies & build output
+node_modules/
+dist/
+.wrangler/
+
+# secrets — never commit
+.env
+.env.*
+!.env.example
+supabase/.env
+supabase/.temp/
+supabase/.branches/
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
