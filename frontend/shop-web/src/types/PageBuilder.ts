@@ -9,7 +9,7 @@ export interface BlockStyle {
 }
 
 export interface HeroContent { title?: string; subtitle?: string; buttonText?: string; buttonLink?: string }
-export interface RichTextContent { html?: string }
+export interface RichTextContent { html?: string; /** Use the full 1200px content width instead of the 760px reading column. */ wide?: boolean }
 export interface GalleryImage { url: string; caption?: string }
 export interface GalleryContent { images?: GalleryImage[] }
 export interface BannerContent { title?: string; subtitle?: string; buttonText?: string; buttonLink?: string }

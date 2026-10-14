@@ -8,7 +8,7 @@ export function RichTextBlock({ block }: { block: PageBlock }) {
   // z treścią pochodzącą od zwykłych użytkowników bez sanitizacji.
   return (
     <BlockWrapper style={block.style}>
-      <div className="pb-richtext" style={{ maxWidth: 760, margin: '0 auto' }} dangerouslySetInnerHTML={{ __html: block.content.html || '' }} />
+      <div className="pb-richtext" style={{ maxWidth: block.content.wide ? 1200 : 760, margin: '0 auto' }} dangerouslySetInnerHTML={{ __html: block.content.html || '' }} />
     </BlockWrapper>
   );
 }
