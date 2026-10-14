@@ -89,7 +89,7 @@ Sign out and in again. Customers cannot change their own role (column-level gran
 - RLS on every table; orders, order items and payments are written only by `SECURITY DEFINER` functions / Edge Functions.
 - `create_order` re-reads prices and stock on the server; the client never sends prices.
 - Rich text and blog HTML are admin-authored and rendered as-is. Do not grant the Admin role to untrusted users.
-- Hardening an **existing** database created from older scripts: drop the mock payment function and lock profile updates.
+- **Existing database created from older scripts?** Do not run the migrations; run [docs/upgrade-existing-database.sql](docs/upgrade-existing-database.sql) once instead (idempotent). It adds the page-builder/blog tables, hardens security and refreshes the home page. The minimal hardening only:
 
 ```sql
 drop function if exists public.pay_order(integer, text);
