@@ -1,3 +1,4 @@
+import { useT } from '../../i18n';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 
@@ -8,17 +9,18 @@ import { useAuthStore } from '../../store/authStore';
  */
 export function EmailConfirmed() {
   const { user, initialized } = useAuthStore();
+  const { t } = useT();
 
   return (
     <div className="page-message">
-      <h1>Adres e-mail potwierdzony ✅</h1>
-      {!initialized && <p>Kończymy logowanie…</p>}
-      {initialized && user && <p>Witaj, {user.firstName || user.email}! Twoje konto jest aktywne i jesteś zalogowany.</p>}
-      {initialized && !user && <p>Twoje konto jest aktywne. Zaloguj się, aby kontynuować.</p>}
+      <h1>{t('confirmed.title')}</h1>
+      {!initialized && <p>{t('confirmed.finishing')}</p>}
+      {initialized && user && <p>{t('confirmed.welcome', { name: user.firstName || user.email })}</p>}
+      {initialized && !user && <p>{t('confirmed.active')}</p>}
       <p>
         {user
-          ? <Link to="/products" className="btn btn-primary">Przejdź do sklepu</Link>
-          : <Link to="/login" className="btn btn-primary">Zaloguj się</Link>}
+          ? <Link to="/products" className="btn btn-primary">{t('confirmed.shop')}</Link>
+          : <Link to="/login" className="btn btn-primary">{t('login.submit')}</Link>}
       </p>
     </div>
   );

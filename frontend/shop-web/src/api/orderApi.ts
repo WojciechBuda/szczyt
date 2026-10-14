@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 import { supabase } from '../lib/supabaseClient';
 import { Order } from '../types/Order';
 
@@ -71,7 +72,7 @@ export const orderApi = {
 
   myOrders: async (): Promise<Order[]> => {
     const { data: auth } = await supabase.auth.getUser();
-    if (!auth.user) throw new Error('Musisz być zalogowany.');
+    if (!auth.user) throw new Error(t('err.loginRequired'));
 
     const { data, error } = await supabase
       .from('orders')

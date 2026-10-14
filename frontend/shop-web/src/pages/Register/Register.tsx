@@ -1,3 +1,4 @@
+import { useT } from '../../i18n';
 import { FormEvent, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authApi } from '../../api/authApi';
@@ -13,6 +14,7 @@ export function Register() {
   const [awaitingConfirmation, setAwaitingConfirmation] = useState(false);
   const setUser = useAuthStore((s) => s.setUser);
   const navigate = useNavigate();
+  const { t } = useT();
 
   const update = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [field]: e.target.value }));
@@ -31,7 +33,7 @@ export function Register() {
         navigate('/');
       }
     } catch (err: any) {
-      setError(err.message || 'Nie udało się utworzyć konta.');
+      setError(err.message || t('register.failed'));
     } finally {
       setLoading(false);
     }
@@ -42,9 +44,9 @@ export function Register() {
     setInfo(null);
     try {
       await authApi.resendConfirmation(form.email);
-      setInfo('Wysłaliśmy wiadomość ponownie. Sprawdź też folder spam.');
+      setInfo(t('register.resent'));
     } catch (err: any) {
-      setError(err.message || 'Nie udało się wysłać wiadomości ponownie.');
+      setError(err.message || t('register.resendFailed'));
     }
   };
 
@@ -52,12 +54,12 @@ export function Register() {
     return (
       <div className="auth-page">
         <div className="auth-form">
-          <h1>Sprawdź skrzynkę</h1>
-          <p>Wysłaliśmy link potwierdzający na adres <strong>{form.email}</strong>. Kliknij go, aby aktywować konto.</p>
+          <h1>{t('register.checkInbox')}</h1>
+          <p>{t('register.sentTo', { email: form.email })}</p>
           {error && <div className="auth-error">{error}</div>}
           {info && <div className="auth-info">{info}</div>}
-          <Button type="button" variant="secondary" onClick={resend}>Wyślij ponownie</Button>
-          <p className="auth-switch"><Link to="/login">Przejdź do logowania</Link></p>
+          <Button type="button" variant="secondary" onClick={resend}>{t('register.resend')}</Button>
+          <p className="auth-switch"><Link to="/login">{t('register.goLogin')}</Link></p>
         </div>
       </div>
     );
@@ -66,18 +68,18 @@ export function Register() {
   return (
     <div className="auth-page">
       <form className="auth-form" onSubmit={handleSubmit}>
-        <h1>Załóż konto</h1>
+        <h1>{t('register.title')}</h1>
         {error && <div className="auth-error">{error}</div>}
-        <label>Imię</label>
+        <label>{t('auth.firstName')}</label>
         <input required value={form.firstName} onChange={update('firstName')} />
-        <label>Nazwisko</label>
+        <label>{t('auth.lastName')}</label>
         <input required value={form.lastName} onChange={update('lastName')} />
-        <label>E-mail</label>
+        <label>{t('auth.email')}</label>
         <input type="email" required value={form.email} onChange={update('email')} />
-        <label>Hasło</label>
+        <label>{t('auth.password')}</label>
         <input type="password" required minLength={6} value={form.password} onChange={update('password')} />
-        <Button type="submit" disabled={loading}>{loading ? 'Tworzenie konta...' : 'Zarejestruj się'}</Button>
-        <p className="auth-switch">Masz już konto? <Link to="/login">Zaloguj się</Link></p>
+        <Button type="submit" disabled={loading}>{loading ? t('register.submitting') : t('register.submit')}</Button>
+        <p className="auth-switch">{t('register.haveAccount')} <Link to="/login">{t('login.submit')}</Link></p>
       </form>
     </div>
   );

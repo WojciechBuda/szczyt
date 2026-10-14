@@ -15,7 +15,7 @@ function toLink(row: LinkRow): SocialLink {
 
 async function fetchFooter(includeHidden: boolean): Promise<Footer> {
   const [{ data: settings, error: settingsError }, linksQuery] = await Promise.all([
-    supabase.from('site_settings').select('footer_text, contact_email').eq('id', 1).single(),
+    supabase.from('site_settings').select('footer_text, footer_text_en, contact_email').eq('id', 1).single(),
     includeHidden
       ? supabase.from('social_links').select('id, platform, url, order, is_visible').order('order')
       : supabase.from('social_links').select('id, platform, url, order, is_visible').eq('is_visible', true).order('order'),
@@ -26,6 +26,7 @@ async function fetchFooter(includeHidden: boolean): Promise<Footer> {
 
   return {
     footerText: settings?.footer_text || '',
+    footerTextEn: settings?.footer_text_en ?? null,
     contactEmail: settings?.contact_email || null,
     socialLinks: (links as unknown as LinkRow[]).map(toLink),
   };

@@ -103,6 +103,18 @@ Hero, banners, blog covers and product fallbacks live in `frontend/shop-web/publ
 
 For real photos: upload them in *Admin* and use landscape JPEG/WebP — products 1200×900 (4:3), hero 1920×800, banners 1600×500, blog covers 1200×630. Keep each under ~300 KB; the storage bucket accepts up to 5 MB.
 
+## Languages (PL / EN)
+
+The storefront ships with Polish and English. The switcher in the navbar stores the choice in `localStorage`
+(first visit: browser language). UI strings live in `frontend/shop-web/src/i18n/{pl,en}.ts` – `en.ts` is typed
+against `pl.ts`, so a missing key fails the build. The admin panel stays Polish.
+
+Content from the database is translated through optional columns: `name_en`/`description_en` (products),
+`name_en` (categories), `title_en`/`excerpt_en`/`content_en` (blog), `footer_text_en` (footer) and
+`content.en` inside page-builder blocks. Anything without an English value falls back to Polish.
+Migration `20261015000004_english_content.sql` fills them for the demo data; for your own products and posts
+set the `*_en` columns in the Supabase table editor.
+
 ## Responsive design
 
 Breakpoints: 900px (hamburger navigation), 768px (tablet: single-column pages, 16px fields), 600px/480px (phone: two-column products, card-style cart, bottom-sheet chat). Controls are 44px on touch devices. Admin page-builder blocks can be reordered with ↑/↓ buttons because HTML5 drag-and-drop does not work on touch screens.

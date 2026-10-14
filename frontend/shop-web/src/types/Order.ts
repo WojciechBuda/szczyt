@@ -24,6 +24,7 @@ export interface Order {
 export interface CartItem {
   productId: number;
   name: string;
+  nameEn?: string | null;
   price: number;
   imageUrl?: string | null;
   quantity: number;

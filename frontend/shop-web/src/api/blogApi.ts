@@ -2,19 +2,19 @@ import { supabase } from '../lib/supabaseClient';
 import { BlogPost } from '../types/Blog';
 
 interface PostRow {
-  id: number; slug: string; title: string; excerpt: string; cover_image_url: string | null;
-  content: string; author_name: string; is_published: boolean; published_at: string | null; created_at: string;
+  id: number; slug: string; title: string; title_en: string | null; excerpt: string; excerpt_en: string | null; cover_image_url: string | null;
+  content: string; content_en: string | null; author_name: string; is_published: boolean; published_at: string | null; created_at: string;
 }
 
 function toPost(r: PostRow): BlogPost {
   return {
-    id: r.id, slug: r.slug, title: r.title, excerpt: r.excerpt, coverImageUrl: r.cover_image_url,
-    content: r.content, authorName: r.author_name, isPublished: r.is_published,
+    id: r.id, slug: r.slug, title: r.title, titleEn: r.title_en, excerpt: r.excerpt, excerptEn: r.excerpt_en, coverImageUrl: r.cover_image_url,
+    content: r.content, contentEn: r.content_en, authorName: r.author_name, isPublished: r.is_published,
     publishedAt: r.published_at, createdAt: r.created_at,
   };
 }
 
-const SELECT = 'id, slug, title, excerpt, cover_image_url, content, author_name, is_published, published_at, created_at';
+const SELECT = 'id, slug, title, title_en, excerpt, excerpt_en, cover_image_url, content, content_en, author_name, is_published, published_at, created_at';
 
 export const blogApi = {
   listPublished: async (): Promise<BlogPost[]> => {

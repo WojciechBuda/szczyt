@@ -14,26 +14,34 @@ export interface ProductQuery {
 interface ProductRow {
   id: number;
   name: string;
+  name_en: string | null;
   description: string;
+  description_en: string | null;
   price: number;
   stock: number;
   image_url: string | null;
   is_active: boolean;
   category_id: number;
-  categories: { name: string } | null;
+  categories: { name: string; name_en: string | null } | null;
 }
+
+const PRODUCT_COLUMNS =
+  'id, name, name_en, description, description_en, price, stock, image_url, is_active, category_id, categories(name, name_en)';
 
 function toProduct(row: ProductRow): Product {
   return {
     id: row.id,
     name: row.name,
+    nameEn: row.name_en,
     description: row.description,
+    descriptionEn: row.description_en,
     price: Number(row.price),
     stock: row.stock,
     imageUrl: row.image_url,
     isActive: row.is_active,
     categoryId: row.category_id,
     categoryName: row.categories?.name || '',
+    categoryNameEn: row.categories?.name_en ?? null,
   };
 }
 
@@ -46,12 +54,12 @@ export const productApi = {
 
     let q = supabase
       .from('products')
-      .select('id, name, description, price, stock, image_url, is_active, category_id, categories(name)', { count: 'exact' })
+      .select(PRODUCT_COLUMNS, { count: 'exact' })
       .eq('is_active', true);
 
     // Strip characters that have a meaning inside a PostgREST filter expression.
     const term = query.search?.replace(/[%,()*]/g, ' ').trim();
-    if (term) q = q.or(`name.ilike.%${term}%,description.ilike.%${term}%`);
+    if (term) q = q.or(`name.ilike.%${term}%,description.ilike.%${term}%,name_en.ilike.%${term}%,description_en.ilike.%${term}%`);
     if (query.categoryId) q = q.eq('category_id', query.categoryId);
     if (query.minPrice != null) q = q.gte('price', query.minPrice);
     if (query.maxPrice != null) q = q.lte('price', query.maxPrice);
@@ -77,7 +85,7 @@ export const productApi = {
   getById: async (id: number): Promise<Product> => {
     const { data, error } = await supabase
       .from('products')
-      .select('id, name, description, price, stock, image_url, is_active, category_id, categories(name)')
+      .select(PRODUCT_COLUMNS)
       .eq('id', id)
       .single();
     if (error) throw error;
@@ -85,9 +93,9 @@ export const productApi = {
   },
 
   categories: async (): Promise<Category[]> => {
-    const { data, error } = await supabase.from('categories').select('id, name, description').order('name');
+    const { data, error } = await supabase.from('categories').select('id, name, name_en, description').order('name');
     if (error) throw error;
-    return data;
+    return data.map((c) => ({ id: c.id, name: c.name, nameEn: c.name_en, description: c.description }));
   },
 
   // Admin
@@ -102,7 +110,7 @@ export const productApi = {
         image_url: data.imageUrl,
         category_id: data.categoryId,
       })
-      .select('id, name, description, price, stock, image_url, is_active, category_id, categories(name)')
+      .select(PRODUCT_COLUMNS)
       .single();
     if (error) throw error;
     return toProduct(row as unknown as ProductRow);
@@ -120,7 +128,7 @@ export const productApi = {
         category_id: data.categoryId,
       })
       .eq('id', id)
-      .select('id, name, description, price, stock, image_url, is_active, category_id, categories(name)')
+      .select(PRODUCT_COLUMNS)
       .single();
     if (error) throw error;
     return toProduct(row as unknown as ProductRow);

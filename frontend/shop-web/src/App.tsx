@@ -1,3 +1,4 @@
+import { useT } from './i18n';
 import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from './lib/supabaseClient';
@@ -23,6 +24,9 @@ import { PaymentReturn } from './pages/PaymentReturn/PaymentReturn';
 
 function App() {
   const { setUser, setInitialized } = useAuthStore();
+  const { t, lang } = useT();
+
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   useEffect(() => {
     if (!isSupabaseConfigured) { setInitialized(true); return; }
@@ -42,11 +46,8 @@ function App() {
   if (!isSupabaseConfigured) {
     return (
       <div className="page-message">
-        <h1>Brak konfiguracji</h1>
-        <p>
-          Ustaw <code>VITE_SUPABASE_URL</code> i <code>VITE_SUPABASE_ANON_KEY</code> (plik <code>.env</code> lokalnie
-          albo zmienne budowania na Cloudflare) i zbuduj aplikację ponownie.
-        </p>
+        <h1>{t('config.title')}</h1>
+        <p>{t('config.body', { url: 'VITE_SUPABASE_URL', key: 'VITE_SUPABASE_ANON_KEY', env: '.env' })}</p>
       </div>
     );
   }

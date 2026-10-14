@@ -1,3 +1,4 @@
+import { useT } from '../../i18n';
 import { useEffect, useState } from 'react';
 import { footerApi } from '../../api/footerApi';
 import { Footer as FooterData } from '../../types/Footer';
@@ -21,6 +22,7 @@ function iconFor(platform: string) {
 
 export function Footer() {
   const [footer, setFooter] = useState<FooterData | null>(null);
+  const { pick } = useT();
 
   useEffect(() => {
     footerApi.get().then(setFooter).catch(() => setFooter(null));
@@ -31,7 +33,7 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div className="site-footer-inner">
-        <p className="site-footer-text">{footer.footerText}</p>
+        <p className="site-footer-text">{pick(footer.footerText, footer.footerTextEn)}</p>
 
         {footer.socialLinks.length > 0 && (
           <div className="site-footer-social">

@@ -1,3 +1,4 @@
+import { useT } from '../../i18n';
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { orderApi } from '../../api/orderApi';
@@ -11,6 +12,7 @@ import './PaymentReturn.css';
 export function PaymentReturn() {
   const [params] = useSearchParams();
   const orderId = Number(params.get('orderId'));
+  const { t } = useT();
   const [status, setStatus] = useState<'checking' | 'paid' | 'pending'>('checking');
 
   useEffect(() => {
@@ -30,20 +32,20 @@ export function PaymentReturn() {
 
   return (
     <div className="payment-return-page">
-      {status === 'checking' && <p>Sprawdzamy status płatności...</p>}
+      {status === 'checking' && <p>{t('payment.checking')}</p>}
       {status === 'paid' && (
         <>
-          <h1>Dziękujemy! ✅</h1>
-          <p>Płatność za zamówienie #{orderId} została potwierdzona.</p>
+          <h1>{t('payment.thanks')}</h1>
+          <p>{t('payment.confirmed', { id: orderId })}</p>
         </>
       )}
       {status === 'pending' && (
         <>
-          <h1>Płatność w toku</h1>
-          <p>Jeszcze nie widzimy potwierdzenia od Przelewy24 — czasem trwa to chwilę dłużej. Sprawdź status w swoim koncie za kilka minut.</p>
+          <h1>{t('payment.pendingTitle')}</h1>
+          <p>{t('payment.pendingBody')}</p>
         </>
       )}
-      <Link to="/account" className="btn btn-primary">Przejdź do moich zamówień</Link>
+      <Link to="/account" className="btn btn-primary">{t('payment.myOrders')}</Link>
     </div>
   );
 }
