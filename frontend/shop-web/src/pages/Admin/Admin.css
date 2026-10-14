@@ -228,3 +228,34 @@
 @media (max-width: 768px) {
   .admin-products { grid-template-columns: 1fr; }
 }
+
+/* ---- Responsive admin ------------------------------------------------------- */
+.admin-tabs { flex-wrap: wrap; }
+.admin-table { min-width: 520px; }
+.admin-products > * { min-width: 0; }
+.layout-tile-type { font-weight: 700; flex: 1; min-width: 0; }
+
+@media (max-width: 768px) {
+  .admin-page { margin: 1rem auto; padding: 0 1rem; }
+  .admin-page h1 { font-size: 1.5rem; }
+  .admin-tabs { gap: 0.4rem; }
+  .admin-tabs button { padding: 0.5rem 0.8rem; min-height: 44px; flex: 1 1 auto; font-size: 0.9rem; }
+  .admin-products { gap: 1.25rem; }
+  .table-actions { flex-wrap: wrap; }
+  .table-actions button { min-height: 40px; padding: 0.3rem 0.8rem; }
+  .order-status-select { min-height: 44px; }
+  .remove-link-btn { width: 44px; height: 44px; }
+  .image-upload-row { flex-wrap: wrap; }
+  .image-upload-btn { padding: 0.7rem 1rem; }
+  .footer-manager-form, .chatbot-manager, .social-links-list { max-width: 100%; }
+}
+
+@media (max-width: 600px) {
+  .form-row, .layout-tile-row { flex-direction: column; }
+  .social-link-row { flex-wrap: wrap; }
+  .social-link-platform { width: 100%; flex: 1 1 100%; }
+  .social-link-url { flex: 1 1 100%; }
+  .social-link-order button { width: 34px; height: 28px; }
+  .faq-row { flex-direction: column; }
+  .faq-row .visibility-toggle { align-self: flex-start; }
+}

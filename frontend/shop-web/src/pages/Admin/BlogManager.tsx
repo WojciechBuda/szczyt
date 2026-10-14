@@ -91,7 +91,8 @@ export function BlogManager() {
         </div>
       </form>
 
-      <table className="admin-table">
+      <div className="table-scroll">
+          <table className="admin-table">
         <thead><tr><th>Tytuł</th><th>Status</th><th>Data</th><th></th></tr></thead>
         <tbody>
           {posts.map((p) => (
@@ -107,6 +108,7 @@ export function BlogManager() {
           ))}
         </tbody>
       </table>
+          </div>
     </div>
   );
 }
