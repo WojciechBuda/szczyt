@@ -20,3 +20,11 @@
 .blog-post-meta { color: var(--color-muted); font-size: 0.88rem; margin-bottom: 1.5rem; }
 .blog-post-content { line-height: 1.7; }
 .blog-post-content p { margin: 0 0 1rem; }
+
+@media (max-width: 600px) {
+  .blog-page, .blog-post-page { margin: 1rem auto; padding: 0 1rem; }
+  .blog-grid { grid-template-columns: minmax(0, 1fr); }
+  .blog-post-cover { max-height: 220px; }
+  .blog-post-content img, .blog-post-content table, .blog-post-content iframe { max-width: 100%; height: auto; }
+  .blog-post-content table { display: block; overflow-x: auto; }
+}

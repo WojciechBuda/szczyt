@@ -1,7 +1,11 @@
 import { ReactNode } from 'react';
 import { BlockStyle } from '../../types/PageBuilder';
 
-const PADDING: Record<string, string> = { sm: '2rem 1.25rem', md: '3.5rem 1.5rem', lg: '5rem 1.5rem' };
+const PADDING: Record<string, string> = {
+  sm: '2rem 1.25rem',
+  md: 'clamp(2.25rem, 6vw, 3.5rem) 1.25rem',
+  lg: 'clamp(3rem, 9vw, 5rem) 1.25rem',
+};
 
 /**
  * Nakłada wspólną "kopertę" stylu (tło/kolor/czcionka) na dowolny typ bloku —

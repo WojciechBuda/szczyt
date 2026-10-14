@@ -57,3 +57,19 @@
 .hs-banner-content { max-width: 560px; margin: 0 auto; }
 .hs-banner-content h2 { font-size: 1.9rem; margin-bottom: 0.5rem; }
 .hs-banner-content p { color: #eef1e9; margin-bottom: 1.5rem; }
+
+/* ---- Responsive blocks ------------------------------------------------------ */
+.hs-hero-content h1, .hs-banner-content h2 { overflow-wrap: anywhere; }
+
+/* Rich text and gallery content is admin-authored HTML: keep it inside the viewport. */
+.pb-richtext img, .pb-richtext iframe, .pb-richtext video { max-width: 100%; height: auto; }
+.pb-richtext table { display: block; max-width: 100%; overflow-x: auto; }
+.pb-richtext pre { overflow-x: auto; }
+
+@media (max-width: 768px) {
+  .hs-hero { padding: 3rem 1rem; }
+  .hs-categories, .hs-featured { margin: 2rem auto; padding: 0 1rem; }
+  .hs-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .hs-category-tile { padding: 1.25rem 0.75rem; font-size: 0.95rem; }
+  .hs-banner { padding: 2.5rem 1rem; margin: 2rem 0; }
+}
