@@ -35,3 +35,17 @@
 @media (max-width: 768px) {
   .products-page { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 768px) {
+  .products-page { margin: 1rem auto; padding: 0 1rem; gap: 1.25rem; }
+  /* Filters become a compact block above the list: search on top, selects side by side. */
+  .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 0.75rem; }
+  .filters h3 { display: none; }
+  .filters input { grid-column: 1 / -1; }
+  .filters label { margin-top: 0; grid-row: 2; }
+  .filters label:nth-of-type(2) { grid-column: 2; }
+  .filters select { grid-row: 3; }
+  .filters input, .filters select { min-height: 44px; }
+  .pagination { gap: 0.5rem; flex-wrap: wrap; }
+  .pagination button { min-height: 44px; }
+}

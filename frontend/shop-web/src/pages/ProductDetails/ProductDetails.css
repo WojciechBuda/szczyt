@@ -19,3 +19,14 @@
 @media (max-width: 768px) {
   .product-details { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 768px) {
+  .product-details { margin: 1rem auto; padding: 0 1rem; gap: 1.25rem; }
+  .pd-image { max-height: 280px; }
+  .pd-price { font-size: 1.5rem; }
+  .pd-actions input { min-height: 44px; }
+}
+@media (max-width: 480px) {
+  .pd-actions { flex-wrap: wrap; }
+  .pd-actions .btn { flex: 1 1 160px; }
+}
