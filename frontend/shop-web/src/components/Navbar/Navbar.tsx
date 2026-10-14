@@ -53,8 +53,8 @@ export function Navbar() {
           </nav>
 
           <div className="navbar-actions">
-            <Link to="/cart" className="cart-link" onClick={closeMenu} aria-label="Koszyk">
-              🛒 {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+            <Link to="/cart" className="cart-link" onClick={closeMenu}>
+              🛒<span className="cart-label"> Koszyk</span> {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
             </Link>
 
             {user ? (

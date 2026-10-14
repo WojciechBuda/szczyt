@@ -36,7 +36,7 @@
 /* Phones: each line item becomes a small card instead of a five-column row. */
 @media (max-width: 600px) {
   .cart-item {
-    grid-template-columns: 64px minmax(0, 1fr) 44px;
+    grid-template-columns: 64px minmax(0, 1fr) auto;
     grid-template-areas:
       'img info remove'
       'img qty  total';
