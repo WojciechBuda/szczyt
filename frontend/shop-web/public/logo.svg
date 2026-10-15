@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 64" role="img" aria-label="Szczyt">
+  <title>Szczyt</title>
+  <g stroke-linejoin="round" stroke-linecap="round">
+    <polygon points="31,50 45,27 59,50" fill="#7da58b" stroke="#7da58b" stroke-width="3"/>
+    <polygon points="6,50 24,17 42,50" fill="#2f4a3c" stroke="#2f4a3c" stroke-width="3"/>
+    <polygon points="24,17 29.5,27 18.5,27" fill="#d97b3f" stroke="#d97b3f" stroke-width="3"/>
+  </g>
+  <text x="76" y="46" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="3" fill="#2f4a3c">SZCZYT</text>
+</svg>

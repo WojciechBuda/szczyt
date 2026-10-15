@@ -37,7 +37,10 @@ export function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar-inner">
-        <Link to="/" className="navbar-brand" onClick={closeMenu}>🏔️ Szczyt</Link>
+        <Link to="/" className="navbar-brand" onClick={closeMenu}>
+          <img src="/logo-mark-light.svg" alt="" width={30} height={30} className="navbar-logo" />
+          <span>Szczyt</span>
+        </Link>
 
         <button
           className="navbar-toggle"
