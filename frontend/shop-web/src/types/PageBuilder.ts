@@ -16,7 +16,10 @@ export interface BannerContent { title?: string; subtitle?: string; buttonText?:
 export interface CategoriesContent { title?: string; subtitle?: string }
 export interface FeaturedContent { title?: string; subtitle?: string }
 
-export type BlockContent = HeroContent & RichTextContent & GalleryContent & BannerContent & CategoriesContent & FeaturedContent;
+export type BlockContent = HeroContent & RichTextContent & GalleryContent & BannerContent & CategoriesContent & FeaturedContent & {
+  /** English overrides for the text fields above; empty/missing values fall back to Polish. */
+  en?: { title?: string; subtitle?: string; buttonText?: string; html?: string };
+};
 
 export interface PageBlock {
   id: number;

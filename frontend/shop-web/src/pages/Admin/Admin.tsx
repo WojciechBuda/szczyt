@@ -11,13 +11,16 @@ import { PageBuilderManager } from './PageBuilderManager';
 import { BlogManager } from './BlogManager';
 import { FooterManager } from './FooterManager';
 import { ChatbotManager } from './ChatbotManager';
+import { useT } from '../../i18n';
+import { TranslateButton } from '../../components/TranslateButton/TranslateButton';
 import './Admin.css';
 
 type Tab = 'stats' | 'products' | 'orders' | 'pagebuilder' | 'blog' | 'footer' | 'chatbot';
 
-const emptyForm = { name: '', description: '', price: 0, stock: 0, imageUrl: '', categoryId: 0 };
+const emptyForm = { name: '', nameEn: '', description: '', descriptionEn: '', price: 0, stock: 0, imageUrl: '', categoryId: 0 };
 
 export function Admin() {
+  const { t, ta } = useT();
   const { user, initialized } = useAuthStore();
   const admin = user?.role === 'Admin';
   const [tab, setTab] = useState<Tab>('stats');
@@ -40,8 +43,8 @@ export function Admin() {
   // the session is restored asynchronously, so the first render has no user yet.
   useEffect(() => { if (admin) loadAll(); }, [admin]);
 
-  if (!initialized) return <div className="admin-page"><p>Ładowanie…</p></div>;
-  if (!admin) return <div className="admin-page"><p>Brak dostępu — ta sekcja jest tylko dla administratorów.</p></div>;
+  if (!initialized) return <div className="admin-page"><p>{ta('Ładowanie…')}</p></div>;
+  if (!admin) return <div className="admin-page"><p>{ta('Brak dostępu — ta sekcja jest tylko dla administratorów.')}</p></div>;
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,7 +54,7 @@ export function Admin() {
       const url = await storageApi.uploadImage(file);
       setForm((f: any) => ({ ...f, imageUrl: url }));
     } catch (err: any) {
-      alert(err.message || 'Nie udało się wgrać zdjęcia.');
+      alert(err.message || ta('Nie udało się wgrać zdjęcia.'));
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -72,11 +75,11 @@ export function Admin() {
 
   const editProduct = (p: Product) => {
     setEditingId(p.id);
-    setForm({ name: p.name, description: p.description, price: p.price, stock: p.stock, imageUrl: p.imageUrl || '', categoryId: p.categoryId });
+    setForm({ name: p.name, nameEn: p.nameEn || '', description: p.description, descriptionEn: p.descriptionEn || '', price: p.price, stock: p.stock, imageUrl: p.imageUrl || '', categoryId: p.categoryId });
   };
 
   const deleteProduct = async (id: number) => {
-    if (confirm('Na pewno usunąć ten produkt?')) {
+    if (confirm(ta('Na pewno usunąć ten produkt?'))) {
       await productApi.remove(id);
       loadAll();
     }
@@ -89,68 +92,77 @@ export function Admin() {
 
   return (
     <div className="admin-page">
-      <h1>Panel administratora</h1>
+      <h1>{ta('Panel administratora')}</h1>
 
       <div className="admin-tabs">
-        <button className={tab === 'stats' ? 'active' : ''} onClick={() => setTab('stats')}>Statystyki</button>
-        <button className={tab === 'products' ? 'active' : ''} onClick={() => setTab('products')}>Produkty</button>
-        <button className={tab === 'orders' ? 'active' : ''} onClick={() => setTab('orders')}>Zamówienia</button>
-        <button className={tab === 'pagebuilder' ? 'active' : ''} onClick={() => setTab('pagebuilder')}>Edytor stron</button>
-        <button className={tab === 'blog' ? 'active' : ''} onClick={() => setTab('blog')}>Blog</button>
-        <button className={tab === 'footer' ? 'active' : ''} onClick={() => setTab('footer')}>Stopka</button>
-        <button className={tab === 'chatbot' ? 'active' : ''} onClick={() => setTab('chatbot')}>Czat wsparcia</button>
+        <button className={tab === 'stats' ? 'active' : ''} onClick={() => setTab('stats')}>{ta('Statystyki')}</button>
+        <button className={tab === 'products' ? 'active' : ''} onClick={() => setTab('products')}>{ta('Produkty')}</button>
+        <button className={tab === 'orders' ? 'active' : ''} onClick={() => setTab('orders')}>{ta('Zamówienia')}</button>
+        <button className={tab === 'pagebuilder' ? 'active' : ''} onClick={() => setTab('pagebuilder')}>{ta('Edytor stron')}</button>
+        <button className={tab === 'blog' ? 'active' : ''} onClick={() => setTab('blog')}>{ta('Blog')}</button>
+        <button className={tab === 'footer' ? 'active' : ''} onClick={() => setTab('footer')}>{ta('Stopka')}</button>
+        <button className={tab === 'chatbot' ? 'active' : ''} onClick={() => setTab('chatbot')}>{ta('Czat wsparcia')}</button>
       </div>
 
       {tab === 'stats' && stats && (
         <div className="stats-grid">
-          <div className="stat-card"><span className="stat-label">Produkty</span><span className="stat-value">{stats.totalProducts}</span></div>
-          <div className="stat-card"><span className="stat-label">Zamówienia</span><span className="stat-value">{stats.totalOrders}</span></div>
-          <div className="stat-card"><span className="stat-label">Użytkownicy</span><span className="stat-value">{stats.totalUsers}</span></div>
-          <div className="stat-card"><span className="stat-label">Przychód</span><span className="stat-value">{stats.revenue.toFixed(2)} zł</span></div>
+          <div className="stat-card"><span className="stat-label">{ta('Produkty')}</span><span className="stat-value">{stats.totalProducts}</span></div>
+          <div className="stat-card"><span className="stat-label">{ta('Zamówienia')}</span><span className="stat-value">{stats.totalOrders}</span></div>
+          <div className="stat-card"><span className="stat-label">{ta('Użytkownicy')}</span><span className="stat-value">{stats.totalUsers}</span></div>
+          <div className="stat-card"><span className="stat-label">{ta('Przychód')}</span><span className="stat-value">{stats.revenue.toFixed(2)} {t('common.currency')}</span></div>
         </div>
       )}
 
       {tab === 'products' && (
         <div className="admin-products">
           <form className="product-form" onSubmit={submitProduct}>
-            <h3>{editingId ? 'Edytuj produkt' : 'Nowy produkt'}</h3>
-            <input placeholder="Nazwa" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-            <textarea placeholder="Opis" required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-            <div className="form-row">
-              <input type="number" step="0.01" placeholder="Cena" required value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} />
-              <input type="number" placeholder="Stan" required value={form.stock} onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })} />
+            <h3>{editingId ? ta('Edytuj produkt') : ta('Nowy produkt')}</h3>
+            <input placeholder={ta('Nazwa')} required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            <textarea placeholder={ta('Opis')} required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+            <div className="en-fields">
+              <span className="en-label">{ta('Wersja angielska (EN)')}</span>
+              <input placeholder={ta('Nazwa (English)')} value={form.nameEn} onChange={(e) => setForm({ ...form, nameEn: e.target.value })} />
+              <textarea placeholder={ta('Opis (English)')} value={form.descriptionEn} onChange={(e) => setForm({ ...form, descriptionEn: e.target.value })} />
+              <TranslateButton
+                sources={() => ({ name: form.name, description: form.description })}
+                onResult={(r) => setForm((f: any) => ({ ...f, nameEn: r.name ?? f.nameEn, descriptionEn: r.description ?? f.descriptionEn }))}
+              />
             </div>
-            <input placeholder="URL zdjęcia" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} />
+            <div className="form-row">
+              <input type="number" step="0.01" placeholder={ta('Cena')} required value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} />
+              <input type="number" placeholder={ta('Stan')} required value={form.stock} onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })} />
+            </div>
+            <input placeholder={ta('URL zdjęcia')} value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} />
             <div className="image-upload-row">
               <label className="image-upload-btn">
-                {uploading ? 'Wgrywanie...' : '📤 Wgraj zdjęcie'}
+                {uploading ? ta('Wgrywanie...') : ta('📤 Wgraj zdjęcie')}
                 <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} hidden />
               </label>
-              {form.imageUrl && <img src={form.imageUrl} alt="Podgląd" className="image-upload-preview" />}
+              {form.imageUrl && <img src={form.imageUrl} alt={ta('Podgląd')} className="image-upload-preview" />}
             </div>
             <select required value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: Number(e.target.value) })}>
-              <option value={0} disabled>Wybierz kategorię</option>
+              <option value={0} disabled>{ta('Wybierz kategorię')}</option>
               {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
             <div className="form-row">
-              <Button type="submit">{editingId ? 'Zapisz zmiany' : 'Dodaj produkt'}</Button>
-              {editingId && <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setForm(emptyForm); }}>Anuluj</Button>}
+              <Button type="submit">{editingId ? ta('Zapisz zmiany') : ta('Dodaj produkt')}</Button>
+              {editingId && <Button type="button" variant="secondary" onClick={() => { setEditingId(null); setForm(emptyForm); }}>{ta('Anuluj')}</Button>}
             </div>
           </form>
 
           <div className="table-scroll">
           <table className="admin-table">
-            <thead><tr><th>Nazwa</th><th>Cena</th><th>Stan</th><th>Kategoria</th><th></th></tr></thead>
+            <thead><tr><th>{ta('Nazwa')}</th><th>{ta('Cena')}</th><th>{ta('Stan')}</th><th>{ta('Kategoria')}</th><th></th></tr></thead>
             <tbody>
               {products.map((p) => (
                 <tr key={p.id}>
                   <td>{p.name}</td>
-                  <td>{p.price.toFixed(2)} zł</td>
+                  <td>{p.price.toFixed(2)} {t('common.currency')}</td>
                   <td>{p.stock}</td>
                   <td>{p.categoryName}</td>
                   <td className="table-actions">
-                    <button onClick={() => editProduct(p)}>Edytuj</button>
-                    <button className="danger" onClick={() => deleteProduct(p.id)}>Usuń</button>
+                    <button onClick={() => editProduct(p)}>{ta('Edytuj')}</button>
+                    <button className="danger" onClick={() => deleteProduct(p.id)}>{ta('Usuń')}</button>
                   </td>
                 </tr>
               ))}
@@ -162,7 +174,7 @@ export function Admin() {
 
       {tab === 'orders' && (
         <div className="admin-orders-list">
-          {orders.length === 0 && <p className="empty-msg">Brak zamówień.</p>}
+          {orders.length === 0 && <p className="empty-msg">{ta('Brak zamówień.')}</p>}
           {orders.map((o) => (
             <OrderCard
               key={o.id}
@@ -170,11 +182,11 @@ export function Admin() {
               showCustomer
               statusControl={
                 <select className="order-status-select" value={o.status} onChange={(e) => changeStatus(o.id, e.target.value)}>
-                  <option value="Pending">Oczekujące</option>
-                  <option value="Paid">Opłacone</option>
-                  <option value="Shipped">Wysłane</option>
-                  <option value="Completed">Zrealizowane</option>
-                  <option value="Cancelled">Anulowane</option>
+                  <option value="Pending">{t('order.status.Pending')}</option>
+                  <option value="Paid">{t('order.status.Paid')}</option>
+                  <option value="Shipped">{t('order.status.Shipped')}</option>
+                  <option value="Completed">{t('order.status.Completed')}</option>
+                  <option value="Cancelled">{t('order.status.Cancelled')}</option>
                 </select>
               }
             />

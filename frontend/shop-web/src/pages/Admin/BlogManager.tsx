@@ -3,9 +3,11 @@ import { blogApi } from '../../api/blogApi';
 import { storageApi } from '../../api/storageApi';
 import { BlogPost } from '../../types/Blog';
 import { Button } from '../../components/Button/Button';
+import { useT } from '../../i18n';
+import { TranslateButton } from '../../components/TranslateButton/TranslateButton';
 import './PageBuilderBlog.css';
 
-const emptyForm = { slug: '', title: '', excerpt: '', coverImageUrl: '', content: '', authorName: 'Szczyt', isPublished: false };
+const emptyForm = { slug: '', title: '', titleEn: '', excerpt: '', excerptEn: '', coverImageUrl: '', content: '', contentEn: '', authorName: 'Szczyt', isPublished: false };
 
 function slugify(text: string) {
   return text.toLowerCase().trim()
@@ -14,6 +16,7 @@ function slugify(text: string) {
 }
 
 export function BlogManager() {
+  const { ta, locale } = useT();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [form, setForm] = useState<any>(emptyForm);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -27,7 +30,7 @@ export function BlogManager() {
   const editPost = (p: BlogPost) => {
     setEditingId(p.id);
     setWasPublished(p.isPublished);
-    setForm({ slug: p.slug, title: p.title, excerpt: p.excerpt, coverImageUrl: p.coverImageUrl || '', content: p.content, authorName: p.authorName, isPublished: p.isPublished });
+    setForm({ slug: p.slug, title: p.title, titleEn: p.titleEn || '', excerpt: p.excerpt, excerptEn: p.excerptEn || '', coverImageUrl: p.coverImageUrl || '', content: p.content, contentEn: p.contentEn || '', authorName: p.authorName, isPublished: p.isPublished });
   };
 
   const resetForm = () => { setEditingId(null); setForm(emptyForm); setWasPublished(false); };
@@ -41,14 +44,14 @@ export function BlogManager() {
       resetForm();
       load();
     } catch (err: any) {
-      alert(`Nie udało się zapisać zmian: ${err?.message || 'nieznany błąd'}`);
+      alert(`${ta('Nie udało się zapisać zmian:')} ${err?.message || ta('nieznany błąd')}`);
     } finally {
       setSaving(false);
     }
   };
 
   const remove = async (id: number) => {
-    if (confirm('Na pewno usunąć ten wpis?')) { await blogApi.remove(id); load(); }
+    if (confirm(ta('Na pewno usunąć ten wpis?'))) { await blogApi.remove(id); load(); }
   };
 
   const uploadCover = async (file: File) => {
@@ -64,19 +67,29 @@ export function BlogManager() {
   return (
     <div className="blog-manager">
       <form className="product-form blog-form" onSubmit={submit}>
-        <h3>{editingId ? 'Edytuj wpis' : 'Nowy wpis'}</h3>
+        <h3>{editingId ? ta('Edytuj wpis') : ta('Nowy wpis')}</h3>
         <input
-          placeholder="Tytuł" required value={form.title}
+          placeholder={ta('Tytuł')} required value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value, slug: editingId ? form.slug : slugify(e.target.value) })}
         />
-        <input placeholder="adres-wpisu" required value={form.slug} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })} />
-        <textarea rows={2} placeholder="Krótki zajawka (excerpt)" required value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} />
-        <textarea rows={8} placeholder="Treść (HTML, np. <p>...</p>)" required value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} />
-        <input placeholder="Autor" value={form.authorName} onChange={(e) => setForm({ ...form, authorName: e.target.value })} />
+        <input placeholder={ta('adres-wpisu')} required value={form.slug} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })} />
+        <textarea rows={2} placeholder={ta('Krótki zajawka (excerpt)')} required value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} />
+        <textarea rows={8} placeholder={ta('Treść (HTML, np. <p>...</p>)')} required value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} />
+        <input placeholder={ta('Autor')} value={form.authorName} onChange={(e) => setForm({ ...form, authorName: e.target.value })} />
+        <div className="en-fields">
+          <span className="en-label">{ta('Wersja angielska (EN)')}</span>
+          <input placeholder={ta('Tytuł (English)')} value={form.titleEn} onChange={(e) => setForm({ ...form, titleEn: e.target.value })} />
+          <textarea rows={2} placeholder={ta('Zajawka (English)')} value={form.excerptEn} onChange={(e) => setForm({ ...form, excerptEn: e.target.value })} />
+          <textarea rows={8} placeholder={ta('Treść HTML (English)')} value={form.contentEn} onChange={(e) => setForm({ ...form, contentEn: e.target.value })} />
+          <TranslateButton
+            sources={() => ({ title: form.title, excerpt: form.excerpt, content: form.content })}
+            onResult={(r) => setForm((f: any) => ({ ...f, titleEn: r.title ?? f.titleEn, excerptEn: r.excerpt ?? f.excerptEn, contentEn: r.content ?? f.contentEn }))}
+          />
+        </div>
 
         <div className="image-upload-row">
           <label className="image-upload-btn">
-            {uploading ? 'Wgrywanie...' : '📤 Zdjęcie okładki'}
+            {uploading ? ta('Wgrywanie...') : ta('📤 Zdjęcie okładki')}
             <input type="file" accept="image/*" hidden disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadCover(f); }} />
           </label>
           {form.coverImageUrl && <img src={form.coverImageUrl} className="image-upload-preview" alt="" />}
@@ -84,27 +97,27 @@ export function BlogManager() {
 
         <label className="visibility-toggle">
           <input type="checkbox" checked={form.isPublished} onChange={(e) => setForm({ ...form, isPublished: e.target.checked })} />
-          Opublikowany
+          {ta('Opublikowany')}
         </label>
 
         <div className="form-row">
-          <Button type="submit" disabled={saving}>{saving ? 'Zapisywanie...' : editingId ? 'Zapisz zmiany' : 'Dodaj wpis'}</Button>
-          {editingId && <Button type="button" variant="secondary" onClick={resetForm}>Anuluj</Button>}
+          <Button type="submit" disabled={saving}>{saving ? ta('Zapisywanie...') : editingId ? ta('Zapisz zmiany') : ta('Dodaj wpis')}</Button>
+          {editingId && <Button type="button" variant="secondary" onClick={resetForm}>{ta('Anuluj')}</Button>}
         </div>
       </form>
 
       <div className="table-scroll">
           <table className="admin-table">
-        <thead><tr><th>Tytuł</th><th>Status</th><th>Data</th><th></th></tr></thead>
+        <thead><tr><th>{ta('Tytuł')}</th><th>{ta('Status')}</th><th>{ta('Data')}</th><th></th></tr></thead>
         <tbody>
           {posts.map((p) => (
             <tr key={p.id}>
               <td>{p.title}</td>
-              <td>{p.isPublished ? 'Opublikowany' : 'Szkic'}</td>
-              <td>{p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('pl-PL') : '—'}</td>
+              <td>{p.isPublished ? ta('Opublikowany') : ta('Szkic')}</td>
+              <td>{p.publishedAt ? new Date(p.publishedAt).toLocaleDateString(locale) : '—'}</td>
               <td className="table-actions">
-                <button onClick={() => editPost(p)}>Edytuj</button>
-                <button className="danger" onClick={() => remove(p.id)}>Usuń</button>
+                <button onClick={() => editPost(p)}>{ta('Edytuj')}</button>
+                <button className="danger" onClick={() => remove(p.id)}>{ta('Usuń')}</button>
               </td>
             </tr>
           ))}

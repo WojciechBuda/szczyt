@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { footerApi } from '../../api/footerApi';
 import { SocialLink } from '../../types/Footer';
 import { Button } from '../../components/Button/Button';
+import { useT } from '../../i18n';
+import { TranslateButton } from '../../components/TranslateButton/TranslateButton';
 
 const emptyForm = { footerText: '', footerTextEn: '', contactEmail: '', socialLinks: [] as SocialLink[] };
 
 export function FooterManager() {
+  const { ta } = useT();
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -60,7 +63,7 @@ export function FooterManager() {
       setSaved(true);
       setTimeout(() => setSaved(false), 1800);
     } catch (err: any) {
-      alert(`Nie udało się zapisać zmian: ${err?.message || 'nieznany błąd'}`);
+      alert(`${ta('Nie udało się zapisać zmian:')} ${err?.message || ta('nieznany błąd')}`);
     } finally {
       setSaving(false);
     }
@@ -68,33 +71,37 @@ export function FooterManager() {
 
   return (
     <div className="footer-manager">
-      <p className="layout-hint">Treść widoczna w stopce na dole każdej strony sklepu.</p>
+      <p className="layout-hint">{ta('Treść widoczna w stopce na dole każdej strony sklepu.')}</p>
 
       <div className="footer-manager-form">
-        <label>Tekst stopki</label>
+        <label>{ta('Tekst stopki')}</label>
         <textarea
           rows={3}
           value={form.footerText}
           onChange={(e) => setForm({ ...form, footerText: e.target.value })}
-          placeholder="Krótki opis sklepu widoczny w stopce"
+          placeholder={ta('Krótki opis sklepu widoczny w stopce')}
         />
 
-        <label>Opis w stopce (English)</label>
+        <label>{ta('Tekst stopki (English)')}</label>
         <textarea
           rows={3}
           value={form.footerTextEn}
           onChange={(e) => setForm({ ...form, footerTextEn: e.target.value })}
           placeholder="Shown instead of the Polish text when the visitor picks EN"
         />
+        <TranslateButton
+          sources={() => ({ text: form.footerText })}
+          onResult={(r) => setForm((f) => ({ ...f, footerTextEn: r.text ?? f.footerTextEn }))}
+        />
 
-        <label>E-mail kontaktowy</label>
+        <label>{ta('E-mail kontaktowy')}</label>
         <input
           value={form.contactEmail}
           onChange={(e) => setForm({ ...form, contactEmail: e.target.value })}
           placeholder="kontakt@szczyt.pl"
         />
 
-        <label>Media społecznościowe</label>
+        <label>{ta('Media społecznościowe')}</label>
         <div className="social-links-list">
           {form.socialLinks.map((link, i) => (
             <div key={i} className="social-link-row">
@@ -106,7 +113,7 @@ export function FooterManager() {
                 className="social-link-platform"
                 value={link.platform}
                 onChange={(e) => updateLink(i, 'platform', e.target.value)}
-                placeholder="np. Instagram"
+                placeholder={ta('np. Instagram')}
               />
               <input
                 className="social-link-url"
@@ -120,16 +127,16 @@ export function FooterManager() {
                   checked={link.isVisible}
                   onChange={(e) => updateLink(i, 'isVisible', e.target.checked)}
                 />
-                Widoczny
+                {ta('Widoczny')}
               </label>
               <button type="button" className="remove-link-btn" onClick={() => removeLink(i)}>✕</button>
             </div>
           ))}
-          <Button type="button" variant="secondary" onClick={addLink}>+ Dodaj link</Button>
+          <Button type="button" variant="secondary" onClick={addLink}>{ta('+ Dodaj link')}</Button>
         </div>
 
         <Button onClick={save} disabled={saving}>
-          {saving ? 'Zapisywanie...' : saved ? 'Zapisano!' : 'Zapisz stopkę'}
+          {saving ? ta('Zapisywanie...') : saved ? ta('Zapisano!') : ta('Zapisz stopkę')}
         </Button>
       </div>
     </div>

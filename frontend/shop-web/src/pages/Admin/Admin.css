@@ -259,3 +259,14 @@
   .faq-row { flex-direction: column; }
   .faq-row .visibility-toggle { align-self: flex-start; }
 }
+
+/* "Przetłumacz na EN" */
+.translate-btn { align-self: flex-start; background: #eef3ef; color: var(--color-primary-dark); border: 1px dashed var(--color-primary-light); border-radius: 8px; padding: 0 0.9rem; min-height: 40px; font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+.translate-btn:disabled { opacity: 0.6; cursor: progress; }
+.en-fields { display: flex; flex-direction: column; gap: 0.5rem; border-left: 3px solid var(--color-primary-light); padding-left: 0.75rem; margin: 0.25rem 0; }
+.en-fields > .en-label { font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* English labels are longer — never break words inside headers or action buttons */
+.admin-table th { white-space: nowrap; }
+.admin-table .table-actions { white-space: nowrap; }
+.admin-table .table-actions button { white-space: nowrap; }

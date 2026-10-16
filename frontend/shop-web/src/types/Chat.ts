@@ -19,4 +19,5 @@ export interface ChatbotSettings {
   model: string;
   systemPrompt: string;
   welcomeMessage: string;
+  welcomeMessageEn?: string | null;
 }
