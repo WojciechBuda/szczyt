@@ -57,7 +57,7 @@ npm run dev                           # http://localhost:5173
 **Edge Functions**
 
 ```bash
-supabase functions deploy chat-support
+supabase functions deploy chat-support       # hard limit: 3 messages/hour per IP (override: supabase secrets set CHAT_LIMIT_PER_HOUR=10, 0 = off)
 supabase functions deploy translate        # admin "Przetłumacz na EN" buttons (same secrets as chat-support)
 supabase functions deploy p24-create-payment
 supabase functions deploy p24-webhook

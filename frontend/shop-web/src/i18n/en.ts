@@ -130,6 +130,7 @@ export const en: Record<TranslationKey, string> = {
   'chat.placeholder': 'Type a message...',
   'chat.send': 'Send',
   'chat.error': 'Sorry, something went wrong. Please try again in a moment.',
+  'chat.limit': 'You have reached the hourly message limit for the assistant. Please try again in about {minutes} min or email us.',
 
   'err.registerFailed': 'Registration failed.',
   'err.loginRequired': 'You must be logged in.',

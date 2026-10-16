@@ -1,6 +1,6 @@
 import { useT } from '../../i18n';
 import { useEffect, useRef, useState } from 'react';
-import { chatApi } from '../../api/chatApi';
+import { chatApi, ChatLimitError } from '../../api/chatApi';
 import { ChatMessage, Faq } from '../../types/Chat';
 import './SupportChat.css';
 
@@ -37,8 +37,9 @@ export function SupportChat() {
     try {
       const reply = await chatApi.sendMessage(nextMessages, lang);
       setMessages((m) => [...m, { role: 'assistant', content: reply }]);
-    } catch {
-      setMessages((m) => [...m, { role: 'assistant', content: t('chat.error') }]);
+    } catch (err) {
+      const content = err instanceof ChatLimitError ? t('chat.limit', { minutes: err.retryAfterMinutes }) : t('chat.error');
+      setMessages((m) => [...m, { role: 'assistant', content }]);
     } finally {
       setSending(false);
     }
