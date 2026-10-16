@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
 
     const [{ data: settings, error: settingsError }, { data: faqs, error: faqsError }] = await Promise.all([
       supabase.from('chatbot_settings').select('*').eq('id', 1).single(),
-      supabase.from('faqs').select('question, answer').eq('is_visible', true).order('order'),
+      supabase.from('faqs').select('question, answer, question_en, answer_en').eq('is_visible', true).order('order'),
     ]);
 
     if (settingsError || !settings) throw settingsError || new Error('Brak konfiguracji bota.');
@@ -139,11 +139,21 @@ Deno.serve(async (req) => {
     }
     if (faqsError) throw faqsError;
 
+    // The storefront tells us which language the visitor picked; the model must answer in it.
+    const english = body?.lang === 'en';
+
     const faqContext = (faqs || [])
-      .map((f: { question: string; answer: string }, i: number) => `${i + 1}. P: ${f.question}\n   O: ${f.answer}`)
+      .map((f: { question: string; answer: string; question_en: string | null; answer_en: string | null }, i: number) =>
+        english && f.question_en && f.answer_en
+          ? `${i + 1}. Q: ${f.question_en}\n   A: ${f.answer_en}`
+          : `${i + 1}. P: ${f.question}\n   O: ${f.answer}`)
       .join('\n\n');
 
-    const systemPrompt = `${settings.system_prompt}\n\n--- FAQ sklepu (wykorzystaj jako źródło wiedzy) ---\n${faqContext}`;
+    const languageRule = english
+      ? '\n\nIMPORTANT: the customer is using the English version of the shop. Always answer in English, whatever language the instructions above are written in.'
+      : '';
+
+    const systemPrompt = `${settings.system_prompt}${languageRule}\n\n--- FAQ sklepu (wykorzystaj jako źródło wiedzy) ---\n${faqContext}`;
 
     let reply: string;
     if (settings.provider === 'openai') {
