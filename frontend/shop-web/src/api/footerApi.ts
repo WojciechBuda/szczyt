@@ -42,7 +42,7 @@ export const footerApi = {
   update: async (data: Footer): Promise<Footer> => {
     const { error: settingsError } = await supabase
       .from('site_settings')
-      .upsert({ id: 1, footer_text: data.footerText, contact_email: data.contactEmail });
+      .upsert({ id: 1, footer_text: data.footerText, footer_text_en: data.footerTextEn ?? null, contact_email: data.contactEmail });
     if (settingsError) throw settingsError;
 
     // Full replace of the social links list — simplest way to support add/remove/reorder in one save.

@@ -36,7 +36,7 @@ from (values
 -- Footer
 update public.site_settings
 set footer_text_en = 'Szczyt — mountain and outdoor gear tested on the trail.'
-where id = 1 and footer_text like 'Szczyt — sprzęt górski%';
+where id = 1 and footer_text_en is null;
 
 -- Home page blocks: English overrides live in content.en (same shape as the Polish fields).
 update public.page_blocks b
