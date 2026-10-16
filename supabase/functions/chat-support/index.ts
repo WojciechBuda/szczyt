@@ -30,6 +30,37 @@ async function sha256Hex(text: string): Promise<string> {
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+// Records this request and returns 0 when it is within the limit, otherwise the seconds until a slot frees up.
+// Insert first, then count: concurrent requests all see each other, so the limit cannot be overshot.
+// Fails closed (throws) when the table is unavailable, so a broken limiter never burns tokens.
+async function checkHourlyLimit(supabase: ReturnType<typeof createClient>, key: string): Promise<number> {
+  const windowMs = 3_600_000;
+  const since = new Date(Date.now() - windowMs).toISOString();
+
+  const { data: mine, error: insertError } = await supabase.from('chat_rate_limits').insert({ key_hash: key }).select('id').single();
+  if (insertError || !mine) throw insertError ?? new Error('rate limit insert failed');
+
+  const { data: rows, error: selectError } = await supabase
+    .from('chat_rate_limits')
+    .select('id, created_at')
+    .eq('key_hash', key)
+    .gt('created_at', since)
+    .order('created_at', { ascending: true })
+    .order('id', { ascending: true });
+  if (selectError || !rows) throw selectError ?? new Error('rate limit select failed');
+
+  // Housekeeping, fire and forget: rows older than a day are useless.
+  void supabase.from('chat_rate_limits').delete().lt('created_at', new Date(Date.now() - 24 * windowMs).toISOString()).then(() => {});
+
+  const position = rows.findIndex((r: { id: number }) => r.id === mine.id);
+  if (position < LIMIT_PER_HOUR) return 0;
+
+  // Over the limit: this attempt must not count against the visitor's next window.
+  await supabase.from('chat_rate_limits').delete().eq('id', mine.id);
+  const slot = rows[position - LIMIT_PER_HOUR]; // the hit whose expiry opens the next slot
+  return Math.max(1, Math.ceil((new Date(slot.created_at).getTime() + windowMs - Date.now()) / 1000));
+}
+
 // Cheap in-memory pre-filter (per isolate): stops bursts before they even reach the database.
 const hits = new Map<string, number[]>();
 function isRateLimited(key: string): boolean {
@@ -139,13 +170,7 @@ Deno.serve(async (req) => {
     // Hard hourly limit per IP. Only the hash is stored, never the address itself.
     // Checked before any LLM call so that blocked requests cost nothing.
     if (LIMIT_PER_HOUR > 0) {
-      const { data: retryAfter, error: limitError } = await supabase.rpc('chat_rate_check', {
-        p_key: await sha256Hex(`chat:${clientIp}`),
-        p_limit: LIMIT_PER_HOUR,
-        p_window_seconds: 3600,
-      });
-      // Fail closed: if the limiter is broken, do not spend tokens.
-      if (limitError) throw limitError;
+      const retryAfter = await checkHourlyLimit(supabase, await sha256Hex(`chat:${clientIp}`));
       if (retryAfter > 0) {
         return jsonResponse({ limited: true, retryAfterMinutes: Math.ceil(retryAfter / 60) });
       }
