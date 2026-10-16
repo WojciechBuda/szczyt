@@ -14,6 +14,9 @@ sql_paths = ["./seed.sql"]
 [functions.chat-support]
 verify_jwt = false
 
+[functions.translate]
+verify_jwt = false
+
 [functions.p24-create-payment]
 verify_jwt = false
 

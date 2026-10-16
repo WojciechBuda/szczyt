@@ -58,6 +58,7 @@ npm run dev                           # http://localhost:5173
 
 ```bash
 supabase functions deploy chat-support
+supabase functions deploy translate        # admin "Przetłumacz na EN" buttons (same secrets as chat-support)
 supabase functions deploy p24-create-payment
 supabase functions deploy p24-webhook
 ```
