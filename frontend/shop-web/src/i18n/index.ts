@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { pl, TranslationKey } from './pl';
 import { en } from './en';
+import { adminEn } from './adminEn';
 
 export type Lang = 'pl' | 'en';
 export const LANGS: Lang[] = ['pl', 'en'];
@@ -39,12 +40,19 @@ export function t(key: TranslationKey, vars?: Vars): string {
   return translate(useLangStore.getState().lang, key, vars);
 }
 
+/** Admin panel: the Polish text is its own key; English comes from adminEn, missing entries stay Polish. */
+function translateAdmin(lang: Lang, pl: string): string {
+  return lang === 'en' ? adminEn[pl] ?? pl : pl;
+}
+
 /** Hook: re-renders on language change. */
 export function useT() {
   const lang = useLangStore((s) => s.lang);
   return {
     lang,
     t: (key: TranslationKey, vars?: Vars) => translate(lang, key, vars),
+    /** Admin panel text, e.g. ta('Zapisz zmiany'). */
+    ta: (plText: string) => translateAdmin(lang, plText),
     /** Pick the English text when available, else fall back to the Polish original. */
     pick: (plText: string, enText?: string | null) => (lang === 'en' && enText ? enText : plText),
     locale: lang === 'pl' ? 'pl-PL' : 'en-GB',

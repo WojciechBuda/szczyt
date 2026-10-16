@@ -104,7 +104,9 @@ export const productApi = {
       .from('products')
       .insert({
         name: data.name,
+        name_en: data.nameEn === undefined ? undefined : data.nameEn || null,
         description: data.description,
+        description_en: data.descriptionEn === undefined ? undefined : data.descriptionEn || null,
         price: data.price,
         stock: data.stock,
         image_url: data.imageUrl,
@@ -121,7 +123,9 @@ export const productApi = {
       .from('products')
       .update({
         name: data.name,
+        name_en: data.nameEn === undefined ? undefined : data.nameEn || null,
         description: data.description,
+        description_en: data.descriptionEn === undefined ? undefined : data.descriptionEn || null,
         price: data.price,
         stock: data.stock,
         image_url: data.imageUrl,

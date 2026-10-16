@@ -63,7 +63,7 @@ export const chatApi = {
     if (existingOnes.length > 0) {
       const results = await Promise.all(
         existingOnes.map((f) =>
-          supabase.from('faqs').update({ question: f.question, answer: f.answer, order: f.order, is_visible: f.isVisible }).eq('id', f.id)
+          supabase.from('faqs').update({ question: f.question, question_en: f.questionEn || null, answer: f.answer, answer_en: f.answerEn || null, order: f.order, is_visible: f.isVisible }).eq('id', f.id)
         )
       );
       const failed = results.find((r) => r.error);
@@ -72,7 +72,7 @@ export const chatApi = {
 
     if (newOnes.length > 0) {
       const { error } = await supabase.from('faqs').insert(
-        newOnes.map((f) => ({ question: f.question, answer: f.answer, order: f.order, is_visible: f.isVisible }))
+        newOnes.map((f) => ({ question: f.question, question_en: f.questionEn || null, answer: f.answer, answer_en: f.answerEn || null, order: f.order, is_visible: f.isVisible }))
       );
       if (error) throw error;
     }
@@ -87,6 +87,7 @@ export const chatApi = {
       model: data.model,
       systemPrompt: data.system_prompt,
       welcomeMessage: data.welcome_message,
+      welcomeMessageEn: data.welcome_message_en ?? null,
     };
   },
 
@@ -98,6 +99,7 @@ export const chatApi = {
       model: settings.model,
       system_prompt: settings.systemPrompt,
       welcome_message: settings.welcomeMessage,
+      welcome_message_en: settings.welcomeMessageEn || null,
     });
     if (error) throw error;
   },

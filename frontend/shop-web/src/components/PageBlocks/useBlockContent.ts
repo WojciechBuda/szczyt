@@ -8,5 +8,7 @@ import { BlockContent, PageBlock } from '../../types/PageBuilder';
 export function useBlockContent(block: PageBlock): BlockContent {
   const { lang } = useT();
   const en = (block.content as BlockContent & { en?: Partial<BlockContent> }).en;
-  return lang === 'en' && en ? { ...block.content, ...en } : block.content;
+  if (lang !== 'en' || !en) return block.content;
+  const filled = Object.fromEntries(Object.entries(en).filter(([, v]) => v !== '' && v != null));
+  return { ...block.content, ...filled };
 }
