@@ -5,9 +5,9 @@ import { ChatMessage, Faq } from '../../types/Chat';
 import './SupportChat.css';
 
 export function SupportChat() {
-  const { t } = useT();
+  const { t, pick, lang } = useT();
   const [available, setAvailable] = useState(false);
-  const [welcome, setWelcome] = useState('');
+  const [welcome, setWelcome] = useState({ pl: '', en: '' as string | null });
   const [faqs, setFaqs] = useState<Faq[]>([]);
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -17,7 +17,7 @@ export function SupportChat() {
 
   useEffect(() => {
     chatApi.getPublicSettings()
-      .then((s) => { setAvailable(s.enabled); setWelcome(s.welcomeMessage); })
+      .then((s) => { setAvailable(s.enabled); setWelcome({ pl: s.welcomeMessage, en: s.welcomeMessageEn }); })
       .catch(() => setAvailable(false));
     chatApi.listVisibleFaqs().then(setFaqs).catch(() => setFaqs([]));
   }, []);
@@ -35,7 +35,7 @@ export function SupportChat() {
     setInput('');
     setSending(true);
     try {
-      const reply = await chatApi.sendMessage(nextMessages);
+      const reply = await chatApi.sendMessage(nextMessages, lang);
       setMessages((m) => [...m, { role: 'assistant', content: reply }]);
     } catch {
       setMessages((m) => [...m, { role: 'assistant', content: t('chat.error') }]);
@@ -57,7 +57,7 @@ export function SupportChat() {
 
           <div className="support-chat-messages" ref={scrollRef}>
             {messages.length === 0 && (
-              <div className="support-chat-bubble support-chat-bubble-assistant">{welcome}</div>
+              <div className="support-chat-bubble support-chat-bubble-assistant">{pick(welcome.pl, welcome.en)}</div>
             )}
             {messages.map((m, i) => (
               <div key={i} className={`support-chat-bubble support-chat-bubble-${m.role}`}>{m.content}</div>
@@ -71,8 +71,8 @@ export function SupportChat() {
             {messages.length === 0 && faqs.length > 0 && (
               <div className="support-chat-suggestions">
                 {faqs.slice(0, 4).map((f) => (
-                  <button key={f.id} className="support-chat-suggestion" onClick={() => send(f.question)}>
-                    {f.question}
+                  <button key={f.id} className="support-chat-suggestion" onClick={() => send(pick(f.question, f.questionEn))}>
+                    {pick(f.question, f.questionEn)}
                   </button>
                 ))}
               </div>

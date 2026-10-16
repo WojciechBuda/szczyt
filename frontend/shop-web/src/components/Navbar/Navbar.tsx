@@ -42,6 +42,14 @@ export function Navbar() {
           <span>Szczyt</span>
         </Link>
 
+        <div className="lang-switch" role="group" aria-label={t('nav.language')}>
+          {LANGS.map((l) => (
+            <button key={l} type="button" className={l === lang ? 'is-active' : ''} aria-pressed={l === lang} onClick={() => setLang(l)}>
+              {l.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
         <button
           className="navbar-toggle"
           onClick={() => setMenuOpen((v) => !v)}
@@ -74,13 +82,6 @@ export function Navbar() {
                 <Link to="/register" onClick={closeMenu}>{t('nav.register')}</Link>
               </>
             )}
-            <div className="lang-switch" role="group" aria-label={t('nav.language')}>
-              {LANGS.map((l) => (
-                <button key={l} type="button" className={l === lang ? 'is-active' : ''} aria-pressed={l === lang} onClick={() => setLang(l)}>
-                  {l.toUpperCase()}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
       </div>

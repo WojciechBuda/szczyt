@@ -1,6 +1,7 @@
 import type { TranslationKey } from './pl';
 
 export const en: Record<TranslationKey, string> = {
+  'meta.title': 'Szczyt — mountain gear shop',
   'nav.products': 'Products',
   'nav.blog': 'Blog',
   'nav.admin': 'Admin panel',

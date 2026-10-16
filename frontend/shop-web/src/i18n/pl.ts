@@ -1,5 +1,6 @@
 /** Polish is the source language; `en.ts` must provide every key declared here. */
 export const pl = {
+  'meta.title': 'Szczyt — sklep górski',
   'nav.products': 'Produkty',
   'nav.blog': 'Blog',
   'nav.admin': 'Panel admina',
