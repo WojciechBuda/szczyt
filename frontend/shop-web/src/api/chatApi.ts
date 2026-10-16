@@ -15,11 +15,19 @@ function toFaq(row: FaqRow): Faq {
   return { id: row.id, question: row.question, questionEn: row.question_en, answer: row.answer, answerEn: row.answer_en, order: row.order, isVisible: row.is_visible };
 }
 
+/** Thrown when the visitor used up the hourly message allowance. */
+export class ChatLimitError extends Error {
+  constructor(public retryAfterMinutes: number) {
+    super('chat rate limit');
+  }
+}
+
 export const chatApi = {
   /** Sends the full conversation so far to the chat-support Edge Function and returns the assistant's reply. */
   sendMessage: async (messages: ChatMessage[], lang: string): Promise<string> => {
     const { data, error } = await supabase.functions.invoke('chat-support', { body: { messages, lang } });
     if (error) throw error;
+    if (data?.limited) throw new ChatLimitError(data.retryAfterMinutes ?? 60);
     if (data?.error) throw new Error(data.error);
     return data.reply as string;
   },

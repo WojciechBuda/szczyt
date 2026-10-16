@@ -21,8 +21,16 @@ const CORS_HEADERS = {
 const MAX_HISTORY_MESSAGES = 12;
 const RATE_LIMIT_PER_MINUTE = 10;
 
-// Best-effort, per-isolate limiter. It slows down trivial abuse of the (paid) LLM
-// endpoint; for hard guarantees put a rate-limiting rule in front of the function.
+// Hard limit per visitor IP, stored in Postgres (chat_rate_check). Override without redeploying code:
+//   supabase secrets set CHAT_LIMIT_PER_HOUR=10
+const LIMIT_PER_HOUR = Number(Deno.env.get('CHAT_LIMIT_PER_HOUR') ?? '3');
+
+async function sha256Hex(text: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Cheap in-memory pre-filter (per isolate): stops bursts before they even reach the database.
 const hits = new Map<string, number[]>();
 function isRateLimited(key: string): boolean {
   const now = Date.now();
@@ -127,6 +135,21 @@ Deno.serve(async (req) => {
     // Service-role client: bypasses RLS so we can read the bot's full
     // configuration (system_prompt) and all visible FAQ entries in one go.
     const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+
+    // Hard hourly limit per IP. Only the hash is stored, never the address itself.
+    // Checked before any LLM call so that blocked requests cost nothing.
+    if (LIMIT_PER_HOUR > 0) {
+      const { data: retryAfter, error: limitError } = await supabase.rpc('chat_rate_check', {
+        p_key: await sha256Hex(`chat:${clientIp}`),
+        p_limit: LIMIT_PER_HOUR,
+        p_window_seconds: 3600,
+      });
+      // Fail closed: if the limiter is broken, do not spend tokens.
+      if (limitError) throw limitError;
+      if (retryAfter > 0) {
+        return jsonResponse({ limited: true, retryAfterMinutes: Math.ceil(retryAfter / 60) });
+      }
+    }
 
     const [{ data: settings, error: settingsError }, { data: faqs, error: faqsError }] = await Promise.all([
       supabase.from('chatbot_settings').select('*').eq('id', 1).single(),

@@ -129,6 +129,7 @@ export const pl = {
   'chat.placeholder': 'Napisz wiadomość...',
   'chat.send': 'Wyślij',
   'chat.error': 'Przepraszam, coś poszło nie tak. Spróbuj ponownie za chwilę.',
+  'chat.limit': 'Wykorzystałeś limit wiadomości do asystenta (na godzinę). Spróbuj ponownie za ok. {minutes} min albo napisz do nas mailowo.',
 
   'err.registerFailed': 'Rejestracja nie powiodła się.',
   'err.loginRequired': 'Musisz być zalogowany.',
