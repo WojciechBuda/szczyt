@@ -110,6 +110,8 @@ Deno.serve(async (req) => {
     return jsonResponse({ translations });
   } catch (err) {
     console.error('translate error:', err);
-    return jsonResponse({ error: 'Tłumaczenie chwilowo niedostępne. Spróbuj ponownie za chwilę.' }, 500);
+    // Admin-only endpoint, so it is safe to show the reason (missing secret, wrong model name, quota...).
+    const reason = err instanceof Error ? err.message.slice(0, 300) : String(err).slice(0, 300);
+    return jsonResponse({ error: `Tłumaczenie nie powiodło się: ${reason}` }, 500);
   }
 });
