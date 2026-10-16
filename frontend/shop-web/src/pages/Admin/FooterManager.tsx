@@ -3,7 +3,7 @@ import { footerApi } from '../../api/footerApi';
 import { SocialLink } from '../../types/Footer';
 import { Button } from '../../components/Button/Button';
 
-const emptyForm = { footerText: '', contactEmail: '', socialLinks: [] as SocialLink[] };
+const emptyForm = { footerText: '', footerTextEn: '', contactEmail: '', socialLinks: [] as SocialLink[] };
 
 export function FooterManager() {
   const [form, setForm] = useState(emptyForm);
@@ -14,6 +14,7 @@ export function FooterManager() {
     footerApi.getAdmin().then((data) =>
       setForm({
         footerText: data.footerText,
+        footerTextEn: data.footerTextEn || '',
         contactEmail: data.contactEmail || '',
         socialLinks: [...data.socialLinks].sort((a, b) => a.order - b.order),
       })
@@ -51,6 +52,7 @@ export function FooterManager() {
     try {
       const payload = {
         footerText: form.footerText,
+        footerTextEn: form.footerTextEn || null,
         contactEmail: form.contactEmail || null,
         socialLinks: form.socialLinks.map((l, i) => ({ ...l, order: i + 1 })),
       };
@@ -75,6 +77,14 @@ export function FooterManager() {
           value={form.footerText}
           onChange={(e) => setForm({ ...form, footerText: e.target.value })}
           placeholder="Krótki opis sklepu widoczny w stopce"
+        />
+
+        <label>Opis w stopce (English)</label>
+        <textarea
+          rows={3}
+          value={form.footerTextEn}
+          onChange={(e) => setForm({ ...form, footerTextEn: e.target.value })}
+          placeholder="Shown instead of the Polish text when the visitor picks EN"
         />
 
         <label>E-mail kontaktowy</label>
