@@ -6,7 +6,9 @@ export interface ChatMessage {
 export interface Faq {
   id: number;
   question: string;
+  questionEn?: string | null;
   answer: string;
+  answerEn?: string | null;
   order: number;
   isVisible: boolean;
 }

@@ -26,7 +26,10 @@ function App() {
   const { setUser, setInitialized } = useAuthStore();
   const { t, lang } = useT();
 
-  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    document.title = t('meta.title');
+  }, [lang]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!isSupabaseConfigured) { setInitialized(true); return; }
